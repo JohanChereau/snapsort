@@ -1,0 +1,19 @@
+header {
+    text-align: center;
+    user-select: none;
+    pointer-events: none;
+}
+
+.header__logo {
+    margin-inline: auto;
+    width: clamp(80px, 5vw, 300px);
+}
+
+.header__title {
+    background-image: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    font-size: var(--fs-900);
+}

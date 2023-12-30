@@ -1,0 +1,40 @@
+.file-selector-container {
+  flex-basis: 100%;
+  text-align: center;
+  background: var(--clr-neutral-800);
+  padding: 2em 2em 0.5em 2em;
+  max-width: 450px;
+  border-radius: 20px;
+}
+
+.file-selector__title {
+  font-size: var(--fs-800);
+  font-weight: var(--fw-medium);
+  margin-bottom: 0.2em;
+}
+
+.file-selector__subtitle,
+.drag-and-drop-area__instructions,
+.file-selector__selected-filepath {
+  font-size: var(--fs-300);
+}
+
+.file-selector__drag-and-drop-area {
+  border: 1px dashed var(--clr-accent-400);
+  border-radius: 20px;
+  padding: 1em;
+  margin-top: 1em;
+}
+
+.drag-and-drop-area__icon {
+  margin-inline: auto;
+  width: clamp(62px, 5vw, 100px);
+}
+
+.drag-and-drop-area__browse-button {
+  margin: 0.8em auto;
+}
+
+.file-selector__selected-filepath {
+  margin-top: 0.5em;
+}

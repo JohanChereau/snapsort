@@ -1,69 +1,105 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --clr-neutral-100-hsl: 0, 0%, 100%;
+  --clr-neutral-200-hsl: 0, 0%, 67%;
+  --clr-neutral-800-hsl: 254, 62%, 4%;
+  --clr-neutral-900-hsl: 252, 100%, 3%;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --clr-primary-400-hsl: 252, 92%, 74%;
+  --clr-secondary-400-hsl: 324, 93%, 35%;
+  --clr-accent-400-hsl: 350, 93%, 55%;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  --clr-neutral-100: hsl(var(--clr-neutral-100-hsl));
+  --clr-neutral-200: hsl(var(--clr-neutral-200-hsl));
+  --clr-neutral-800: hsl(var(--clr-neutral-800-hsl));
+  --clr-neutral-900: hsl(var(--clr-neutral-900-hsl));
+
+  --clr-primary-400: hsl(var(--clr-primary-400-hsl));
+  --clr-secondary-400: hsl(var(--clr-secondary-400-hsl));
+  --clr-accent-400: hsl(var(--clr-accent-400-hsl));
+
+  --gradient-primary: linear-gradient(to right,
+    var(--clr-primary-400),
+    var(--clr-accent-400));
+
+  --ff-accent: 'Roboto', sans-serif;
+  --ff-default: 'Nunito', sans-serif;
+
+  --fw-bold: 700;
+  --fw-medium: 500;
+  --fw-regular: 400;
+  --fw-light: 300;
+
+  --fs-900: 2.6rem;
+  --fs-800: 1.9rem;
+  --fs-600: 1.3rem;
+  --fs-400: 1.1rem;
+  --fs-300: 1rem;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+/* === Global styling === */
+img,
+svg {
+  display: block;
+  max-width: 100%;
 }
 
 body {
-  margin: 0;
+  min-height: 100svh;
+
+  font-family: var(--ff-default);
+  font-size: var(--fs-400);
+  font-weight: var(--fw-light);
+  color: var(--clr-neutral-100);
+  background: var(--clr-neutral-900);
+}
+
+h1, h2, h3 {
+  font-family: var(--ff-accent);
+  font-weight: var(--fw-bold);
+}
+
+/* === Utility classes === */
+//Layout
+.container {
+  width: 80%;
+  margin-inline: auto;
+  max-width: 1200px;
+}
+
+//Style
+.bg-primary {
+  background: var(--clr-primary-400);
+}
+
+.button {
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
+  justify-content: center;
+  align-items: center;
+  gap: clamp(.5em, 2vw, 1em);
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+  border: none;
+  padding: .4em 1em;
+  border-radius: 10px;
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  font-family: var(--ff-accent);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-400);
+  letter-spacing: .2px;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.button.bg-primary:is(:focus, :hover) {
+  $bg-color: hsl(252, 92%, 74%);
+  background: lighten($color: $bg-color, $amount: 3);
+}
+
+.darken-text {
+  color: var(--clr-neutral-200);
 }

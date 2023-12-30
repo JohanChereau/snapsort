@@ -1,0 +1,12 @@
+.file-selectors-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2em;
+    margin-top: 3em;
+}
+
+.sorting-tool__sort-button {
+    margin: 1em auto;
+}

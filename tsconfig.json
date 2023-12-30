@@ -22,6 +22,7 @@
       "interfaces/": ["./src/data/interfaces/", "./src/data/interfaces/*"],
       "objects/*": ["./src/data/objects/*"],
       "utils/*": [".src/utils"],
+      "pages/*": [".src/pages/*"],
     },
 
     /* Linting */
