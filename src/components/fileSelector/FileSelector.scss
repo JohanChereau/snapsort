@@ -1,10 +1,17 @@
 .file-selector-container {
+  position: relative;
   flex-basis: 100%;
   text-align: center;
   background: var(--clr-neutral-800);
   padding: 2em 2em 0.5em 2em;
   max-width: 450px;
   border-radius: 20px;
+}
+
+.file-selector__checked-icon {
+  position: absolute;
+  top: .5em;
+  right: .5em;
 }
 
 .file-selector__title {
