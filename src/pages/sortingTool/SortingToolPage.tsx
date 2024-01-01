@@ -3,12 +3,26 @@ import './SortingToolPage.scss';
 import FileSelector from 'components/fileSelector/FileSelector';
 
 const SortingToolPage = () => {
-
   const [sourceFolder, setSourceFolder] = useState<string | null>(null);
-  const [exportFolder, setExportFolder] = useState<string | null>(null);
+  const [destinationFolder, setDestinationFolder] = useState<string | null>(null);
 
-  console.log(sourceFolder);
-  console.log(exportFolder);
+  async function handleSort() {
+    try {
+      if (sourceFolder && destinationFolder) {
+        const result = await window.electron.performSort({
+          sourceFolder,
+          destinationFolder,
+          fileExtensions: ['.jpg', '.png', '.JPG', '.PNG'],
+        });
+        console.log(result);
+      } else {
+        console.error('Source folder or export folder is not selected.');
+      }
+    } catch (error) {
+      console.error('Error during sorting:', error);
+      // Gérez les erreurs ici.
+    }
+  }
 
   return (
     <main>
@@ -28,13 +42,16 @@ const SortingToolPage = () => {
             subtitle="Select a folder for exporting your sorted photos."
             instructions="or drag & drop your folder here."
             actionButtonText="Browse folder"
-            onFolderSelected={(folder) => setExportFolder(folder)}
-            isFolderValid={exportFolder ? true : false}
-            selectedFolder={exportFolder}
+            onFolderSelected={(folder) => setDestinationFolder(folder)}
+            isFolderValid={destinationFolder ? true : false}
+            selectedFolder={destinationFolder}
           />
         </div>
 
-        <button className="button bg-primary sorting-tool__sort-button">
+        <button
+          className="button bg-primary sorting-tool__sort-button"
+          onClick={() => handleSort()}
+        >
           Sort
         </button>
       </section>

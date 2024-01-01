@@ -1,9 +1,11 @@
 import { OpenDialogOptions, contextBridge, ipcRenderer } from 'electron';
+import { SortingOptions } from './types';
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: withPrototype(ipcRenderer),
   dialog: { showOpenDialog },
+  performSort: performSort,
 });
 
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
@@ -27,6 +29,10 @@ function withPrototype(obj: Record<string, any>) {
 
 async function showOpenDialog(options: OpenDialogOptions) {
   return await ipcRenderer.invoke('show-open-dialog', options);
+}
+
+async function performSort(options: SortingOptions) {
+  return await ipcRenderer.invoke('perform-sort', options);
 }
 
 // --------- Preload scripts loading ---------
@@ -132,6 +138,7 @@ declare global {
       dialog: {
         showOpenDialog: typeof showOpenDialog;
       };
+      performSort: typeof performSort;
     };
   }
 }

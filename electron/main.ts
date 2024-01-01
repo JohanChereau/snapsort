@@ -5,7 +5,9 @@ import {
   dialog,
   OpenDialogOptions,
 } from 'electron';
+import {sortFiles} from './utils/file/fileUtils';
 import path from 'node:path';
+import { SortingOptions } from './types';
 
 // The built directory structure
 //
@@ -72,12 +74,22 @@ app.whenReady().then(() => {
 
   ipcMain.handle(
     'show-open-dialog',
-    async (event, options: OpenDialogOptions) => {
+    async (_event, options: OpenDialogOptions) => {
       if (mainWindow) {
         return await dialog.showOpenDialog(mainWindow, options);
       } else {
         throw new Error('Main window not available');
       }
+    }
+  );
+
+  ipcMain.handle(
+    'perform-sort',
+    async (
+      _,
+      { sourceFolder, destinationFolder, fileExtensions }: SortingOptions
+    ) => {
+      await sortFiles(sourceFolder, destinationFolder, fileExtensions)
     }
   );
 });
