@@ -5,7 +5,7 @@ import {
   dialog,
   OpenDialogOptions,
 } from 'electron';
-import {sortFiles} from './utils/file/fileUtils';
+import { sortFiles } from './utils/file/fileUtils';
 import path from 'node:path';
 import { SortingOptions } from './types';
 
@@ -33,6 +33,7 @@ function createWindow(): BrowserWindow {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
+      contextIsolation: true,
     },
   });
 
@@ -86,10 +87,10 @@ app.whenReady().then(() => {
   ipcMain.handle(
     'perform-sort',
     async (
-      _,
+      event,
       { sourceFolder, destinationFolder, fileExtensions }: SortingOptions
     ) => {
-      await sortFiles(sourceFolder, destinationFolder, fileExtensions)
+      await sortFiles(event, sourceFolder, destinationFolder, fileExtensions);
     }
   );
 });

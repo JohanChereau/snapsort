@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './SortingToolPage.scss';
 import FileSelector from 'components/fileSelector/FileSelector';
+import { SortingProgress } from 'electron/types';
 
 const SortingToolPage = () => {
   const [sourceFolder, setSourceFolder] = useState<string | null>(null);
   const [destinationFolder, setDestinationFolder] = useState<string | null>(null);
+  const [sortProgress, setSortProgress] = useState<SortingProgress>({sorted: 0, total: 0});
 
   async function handleSort() {
     try {
@@ -23,6 +25,17 @@ const SortingToolPage = () => {
       // Gérez les erreurs ici.
     }
   }
+
+  useEffect(() => {
+    window.electron.sortProgress.addSortProgressListener((_event, progress) => {
+      setSortProgress(progress);
+    });
+  
+    return () => {
+      window.electron.sortProgress.removeSortProgressListener();
+    }
+  }, [])
+  
 
   return (
     <main>
@@ -54,6 +67,8 @@ const SortingToolPage = () => {
         >
           Sort
         </button>
+
+        <p>Progress : {sortProgress.sorted} / {sortProgress.total}</p>
       </section>
     </main>
   );

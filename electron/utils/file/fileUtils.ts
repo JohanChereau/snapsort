@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'node:path';
-import { FileInfo } from 'electron/types';
+import { FileInfo, SortingProgress } from 'electron/types';
 import { getMonthNameFromIndex } from '..';
 
 export async function getAllFilesFromFolder(
@@ -45,46 +45,65 @@ export async function getAllFilesFromFolder(
 }
 
 export async function sortFiles(
+  event: Electron.IpcMainInvokeEvent,
   sourceFolder: string,
   destinationFolder: string,
-  extensions: string[]
+  fileExtensions: string[]
 ): Promise<void> {
   try {
     const files: FileInfo[] = await getAllFilesFromFolder(
       sourceFolder,
-      extensions
+      fileExtensions
     );
 
-    // Loop through each file
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      await sortFile(file, destinationFolder);
 
-      const concatenatedMonth = `${file.monthIndex} - ${file.month}`;
+      const progress: SortingProgress = {
+        sorted: i + 1,
+        total: files.length,
+      };
 
-      const destinationPath = path.join(
-        destinationFolder,
-        file.year,
-        concatenatedMonth,
-      );
-      let destinationFilePath = path.join(destinationPath, file.name);
-
-      // Create the destination folder if it doesn't exist
-      fs.mkdirSync(destinationPath, { recursive: true });
-
-      // If the file already exists, generate a new name
-      while (fs.existsSync(destinationFilePath)) {
-        destinationFilePath = path.join(
-          destinationPath,
-          generateUniqueFileName(file)
-        );
-      }
-
-      // Copy the file to the destination folder
-      fs.copyFileSync(file.path, destinationFilePath);
-      console.log('Files sorted.');
+      //Send a progress event
+      event.sender.send('sort-progress', progress);
     }
   } catch (error) {
-    console.error(`An error occurred while sorting the files: ${error}`);
+    event.sender.send('sort-error', { error: error });
+  }
+}
+
+export async function sortFile(
+  file: FileInfo,
+  destinationFolder: string
+): Promise<void> {
+  try {
+    const concatenatedMonth = `${file.monthIndex} - ${file.month}`;
+
+    const destinationPath = path.join(
+      destinationFolder,
+      file.year,
+      concatenatedMonth
+    );
+    let destinationFilePath = path.join(destinationPath, file.name);
+
+    // Create the destination folder if it doesn't exist
+    fs.mkdirSync(destinationPath, { recursive: true });
+
+    // If the file already exists, generate a new name
+    while (fs.existsSync(destinationFilePath)) {
+      destinationFilePath = path.join(
+        destinationPath,
+        generateUniqueFileName(file)
+      );
+    }
+
+    // Copy the file to the destination folder
+    fs.copyFileSync(file.path, destinationFilePath);
+  } catch (error) {
+    console.error(
+      `An error occurred while sorting the file ${file.path}: ${error}`
+    );
   }
 }
 

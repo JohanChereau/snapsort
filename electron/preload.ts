@@ -1,11 +1,12 @@
 import { OpenDialogOptions, contextBridge, ipcRenderer } from 'electron';
-import { SortingOptions } from './types';
+import { SortingOptions, SortingProgress } from './types';
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: withPrototype(ipcRenderer),
   dialog: { showOpenDialog },
   performSort: performSort,
+  sortProgress: { addSortProgressListener, removeSortProgressListener },
 });
 
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
@@ -33,6 +34,19 @@ async function showOpenDialog(options: OpenDialogOptions) {
 
 async function performSort(options: SortingOptions) {
   return await ipcRenderer.invoke('perform-sort', options);
+}
+
+function addSortProgressListener(
+  callback: (
+    event: Electron.IpcRendererEvent,
+    progress: SortingProgress
+  ) => void
+) {
+  ipcRenderer.on('sort-progress', callback);
+}
+
+function removeSortProgressListener() {
+  ipcRenderer.removeAllListeners('sort-progress');
 }
 
 // --------- Preload scripts loading ---------
@@ -139,6 +153,10 @@ declare global {
         showOpenDialog: typeof showOpenDialog;
       };
       performSort: typeof performSort;
+      sortProgress: {
+        addSortProgressListener: typeof addSortProgressListener;
+        removeSortProgressListener: typeof removeSortProgressListener;
+      };
     };
   }
 }

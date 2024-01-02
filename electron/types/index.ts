@@ -13,3 +13,8 @@ export type FileInfo = {
     monthIndex: number;
     day: string;
 }
+
+export type SortingProgress = {
+    sorted: number;
+    total: number;
+}
