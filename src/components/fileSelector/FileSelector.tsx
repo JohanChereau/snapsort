@@ -42,16 +42,18 @@ const FileSelector = ({
   }
 
   return (
-    <div className="file-selector-container">
+    <div className="file-selector">
 
       {
         isFolderValid && <img src={checkIcon} alt="Checked icon : the folder is valid" className='file-selector__checked-icon'/>
       }
 
-      <h3 className="file-selector__title">{title || 'Title'}</h3>
-      <p className="file-selector__subtitle darken-text">
-        {subtitle || 'Subtitle'}
-      </p>
+      <div className="file-selector__header">
+        <h3 className="file-selector__title">{title || 'Title'}</h3>
+        <p className="file-selector__subtitle darken-text">
+          {subtitle || 'Subtitle'}
+        </p>
+      </div>
 
       <div className="file-selector__drag-and-drop-area">
         <img

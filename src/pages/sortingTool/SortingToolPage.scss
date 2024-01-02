@@ -1,12 +1,22 @@
-.file-selectors-container {
+.sorting-tool-section {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 2em;
-    margin-top: 3em;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.file-selectors {
+  display: grid;
+  gap: 2rem;
+  margin-inline: auto;
+  margin-top: 3em;
+}
+
+@media (min-width: 1100px) {
+  .file-selectors {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .sorting-tool__sort-button {
-    margin: 1em auto;
+  margin: 2em auto;
 }

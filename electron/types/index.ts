@@ -15,6 +15,7 @@ export type FileInfo = {
 }
 
 export type SortingProgress = {
-    sorted: number;
+    sortedIndex: number;
     total: number;
+    path: string;
 }

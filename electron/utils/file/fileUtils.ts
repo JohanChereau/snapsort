@@ -61,12 +61,15 @@ export async function sortFiles(
       await sortFile(file, destinationFolder);
 
       const progress: SortingProgress = {
-        sorted: i + 1,
+        sortedIndex: i + 1,
+        path: file.path,
         total: files.length,
       };
 
       //Send a progress event
       event.sender.send('sort-progress', progress);
+
+      
     }
   } catch (error) {
     event.sender.send('sort-error', { error: error });

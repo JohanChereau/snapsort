@@ -1,0 +1,42 @@
+.progress-infos {
+  padding: 0.2em;
+}
+
+.progress-infos__header {
+  display: flex;
+  justify-content: space-between;
+}
+
+#progress-bar {
+  -webkit-appearance: none;
+  appearance: none;
+
+  width: 100%;
+  height: 30px;
+  margin: .4em 0;
+}
+
+#progress-bar::-webkit-progress-bar {
+  background-color: var(--clr-neutral-800);
+  border-radius: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+#progress-bar::-webkit-progress-value {
+  background-image: var(--gradient-primary);
+  border-radius: 15px;
+}
+
+.progress-infos__footer {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    font-size: var(--fs-300);
+
+  }
+
+.progress-pathname {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

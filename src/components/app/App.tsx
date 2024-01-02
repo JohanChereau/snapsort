@@ -2,6 +2,7 @@ import { RouterProvider, createHashRouter } from 'react-router-dom';
 import HomePage from '@/pages/home/HomePage';
 import SortingToolPage from '@/pages/sortingTool/SortingToolPage';
 import Header from 'components/header/Header';
+import './App.scss';
 
 const router = createHashRouter([
   {

@@ -2,21 +2,21 @@ import { useState, useEffect } from 'react';
 import './SortingToolPage.scss';
 import FileSelector from 'components/fileSelector/FileSelector';
 import { SortingProgress } from 'electron/types';
+import ProgressInfos from '@/components/progressInfos/ProgressInfos';
 
 const SortingToolPage = () => {
   const [sourceFolder, setSourceFolder] = useState<string | null>(null);
   const [destinationFolder, setDestinationFolder] = useState<string | null>(null);
-  const [sortProgress, setSortProgress] = useState<SortingProgress>({sorted: 0, total: 0});
+  const [sortProgress, setSortProgress] = useState<SortingProgress>({sortedIndex: 0, total: 0, path: ''});
 
   async function handleSort() {
     try {
       if (sourceFolder && destinationFolder) {
-        const result = await window.electron.performSort({
+        await window.electron.performSort({
           sourceFolder,
           destinationFolder,
           fileExtensions: ['.jpg', '.png', '.JPG', '.PNG'],
         });
-        console.log(result);
       } else {
         console.error('Source folder or export folder is not selected.');
       }
@@ -40,7 +40,7 @@ const SortingToolPage = () => {
   return (
     <main>
       <section className="sorting-tool-section">
-        <div className="file-selectors-container container">
+        <div className="file-selectors container">
           <FileSelector
             title="Upload your photos"
             subtitle="Select your photo folder to sort."
@@ -68,7 +68,7 @@ const SortingToolPage = () => {
           Sort
         </button>
 
-        <p>Progress : {sortProgress.sorted} / {sortProgress.total}</p>
+        <ProgressInfos progressOptions={sortProgress}/>
       </section>
     </main>
   );
