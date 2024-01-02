@@ -68,8 +68,6 @@ export async function sortFiles(
 
       //Send a progress event
       event.sender.send('sort-progress', progress);
-
-      
     }
   } catch (error) {
     event.sender.send('sort-error', { error: error });
@@ -118,4 +116,8 @@ function generateUniqueFileName(file: FileInfo): string {
   const ext = path.extname(file.name);
   const base = path.basename(file.name, ext);
   return `SNAPSORT_${timestamp}_${base}${ext}`;
+}
+
+export async function checkIsFolder(path: string): Promise<boolean> {
+  return !fs.lstatSync(path).isFile();
 }

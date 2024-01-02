@@ -8,6 +8,7 @@
 :root {
   --clr-neutral-100-hsl: 0, 0%, 100%;
   --clr-neutral-200-hsl: 0, 0%, 67%;
+  --clr-neutral-700-hsl: 254, 62%, 8%;
   --clr-neutral-800-hsl: 254, 62%, 4%;
   --clr-neutral-900-hsl: 252, 100%, 3%;
 
@@ -17,6 +18,7 @@
 
   --clr-neutral-100: hsl(var(--clr-neutral-100-hsl));
   --clr-neutral-200: hsl(var(--clr-neutral-200-hsl));
+  --clr-neutral-700: hsl(var(--clr-neutral-700-hsl));
   --clr-neutral-800: hsl(var(--clr-neutral-800-hsl));
   --clr-neutral-900: hsl(var(--clr-neutral-900-hsl));
 
@@ -98,6 +100,16 @@ h1, h2, h3 {
 .button.bg-primary:is(:focus, :hover) {
   $bg-color: hsl(252, 92%, 74%);
   background: lighten($color: $bg-color, $amount: 3);
+}
+
+.button:disabled {
+  background: var(--clr-neutral-700);
+  color: var(--clr-neutral-200);
+}
+
+.button:disabled:is(:hover, :focus) {
+  background: var(--clr-neutral-700);
+  color: var(--clr-neutral-200);
 }
 
 .darken-text {

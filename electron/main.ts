@@ -5,7 +5,7 @@ import {
   dialog,
   OpenDialogOptions,
 } from 'electron';
-import { sortFiles } from './utils/file/fileUtils';
+import { checkIsFolder, sortFiles } from './utils/file/fileUtils';
 import path from 'node:path';
 import { SortingOptions } from './types';
 
@@ -93,4 +93,8 @@ app.whenReady().then(() => {
       await sortFiles(event, sourceFolder, destinationFolder, fileExtensions);
     }
   );
+
+  ipcMain.handle('is-folder', async(_event, path) => {
+    return checkIsFolder(path);
+  })
 });

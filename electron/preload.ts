@@ -5,8 +5,10 @@ import { SortingOptions, SortingProgress } from './types';
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: withPrototype(ipcRenderer),
   dialog: { showOpenDialog },
+  file: {isFolder},
   performSort: performSort,
   sortProgress: { addSortProgressListener, removeSortProgressListener },
+  sortError: {addSortErrorListener, removeSortErrorListener},
 });
 
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
@@ -47,6 +49,18 @@ function addSortProgressListener(
 
 function removeSortProgressListener() {
   ipcRenderer.removeAllListeners('sort-progress');
+}
+
+function addSortErrorListener(callback: (event: Electron.IpcRendererEvent, error: Error) => void) {
+  ipcRenderer.on('sort-error', callback);
+}
+
+function removeSortErrorListener() {
+  ipcRenderer.removeAllListeners('sort-error');
+}
+
+async function isFolder(path: string) {
+  return await ipcRenderer.invoke('is-folder', path);
 }
 
 // --------- Preload scripts loading ---------
@@ -157,6 +171,13 @@ declare global {
         addSortProgressListener: typeof addSortProgressListener;
         removeSortProgressListener: typeof removeSortProgressListener;
       };
+      sortError: {
+        addSortErrorListener: typeof addSortErrorListener;
+        removeSortErrorListener: typeof removeSortErrorListener;
+      }
+      file: {
+        isFolder: typeof isFolder;
+      }
     };
   }
 }

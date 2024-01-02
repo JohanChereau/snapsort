@@ -41,6 +41,30 @@ const FileSelector = ({
     }
   }
 
+  const handleDragOver = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const files = e.dataTransfer.files;
+
+    for(const file of files) {
+      const isFolder = await window.electron.file.isFolder(file.path);
+
+      if(isFolder) {
+
+        if(onFolderSelected) {
+          onFolderSelected(file.path);
+          return;
+        }
+      }
+    }
+  }
+
   return (
     <div className="file-selector">
 
@@ -55,7 +79,7 @@ const FileSelector = ({
         </p>
       </div>
 
-      <div className="file-selector__drag-and-drop-area">
+      <div className="file-selector__drag-and-drop-area" onDrop={handleDrop} onDragOver={handleDragOver}>
         <img
           src={folderIcon}
           alt="Folder icon"

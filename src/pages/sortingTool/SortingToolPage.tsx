@@ -7,11 +7,17 @@ import ProgressInfos from '@/components/progressInfos/ProgressInfos';
 const SortingToolPage = () => {
   const [sourceFolder, setSourceFolder] = useState<string | null>(null);
   const [destinationFolder, setDestinationFolder] = useState<string | null>(null);
+
+  const isReadyToSort: boolean = sourceFolder && destinationFolder ? true : false;
+
+  const [isSorting, setIsSorting] = useState<boolean>(false);
   const [sortProgress, setSortProgress] = useState<SortingProgress>({sortedIndex: 0, total: 0, path: ''});
+  const [sortError, setSortError] = useState<Error | null>(null);
 
   async function handleSort() {
     try {
       if (sourceFolder && destinationFolder) {
+        setIsSorting(true);
         await window.electron.performSort({
           sourceFolder,
           destinationFolder,
@@ -30,9 +36,14 @@ const SortingToolPage = () => {
     window.electron.sortProgress.addSortProgressListener((_event, progress) => {
       setSortProgress(progress);
     });
+
+    window.electron.sortError.addSortErrorListener((_event, error) => {
+      setSortError(error);
+    })
   
     return () => {
       window.electron.sortProgress.removeSortProgressListener();
+      window.electron.sortError.removeSortErrorListener();
     }
   }, [])
   
@@ -64,11 +75,18 @@ const SortingToolPage = () => {
         <button
           className="button bg-primary sorting-tool__sort-button"
           onClick={() => handleSort()}
+          disabled={!isReadyToSort}
         >
           Sort
         </button>
 
-        <ProgressInfos progressOptions={sortProgress}/>
+        {isSorting && <ProgressInfos progressOptions={sortProgress}/>}
+        
+        {sortError && <div className="progress-error container">
+          <h3 className='progress-error__name'>An error has occurred. Please try again.</h3>
+          <p className="progress-error__message">{sortError.name} : {sortError.message}</p>
+        </div>}
+
       </section>
     </main>
   );
