@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import './SortingToolPage.scss';
 import FileSelector from 'components/fileSelector/FileSelector';
 import { SortingProgress } from 'electron/types';
-import ProgressInfos from '@/components/progressInfos/ProgressInfos';
+import ProgressInfos from 'components/progressInfos/ProgressInfos';
+import HomeButton from '@/components/homeButton/HomeButton';
 
 const SortingToolPage = () => {
   const [sourceFolder, setSourceFolder] = useState<string | null>(null);
@@ -51,6 +52,9 @@ const SortingToolPage = () => {
   return (
     <main>
       <section className="sorting-tool-section">
+
+        <HomeButton />
+
         <div className="file-selectors container">
           <FileSelector
             title="Upload your photos"

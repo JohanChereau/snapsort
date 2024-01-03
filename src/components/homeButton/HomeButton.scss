@@ -1,0 +1,12 @@
+.home-button__icon {
+    position: fixed;
+    z-index: 9999;
+    top: 1em;
+    left: 1em;
+    width: 30px;
+    transition: fill .2s ease-in-out;
+}
+
+.home-button__icon:is(:focus, :hover) {
+    fill: var(--clr-primary-400);
+}

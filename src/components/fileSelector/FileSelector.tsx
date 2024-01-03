@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import folderIcon from '@/assets/icons/folder.svg';
 import browseFolderIcon from '@/assets/icons/browse-folder.svg';
 import checkIcon from '@/assets/icons/check.svg';
@@ -23,6 +24,8 @@ const FileSelector = ({
   selectedFolder,
 }: FileSelectorProps) => {
 
+  const dragAndDropAreaRef = useRef<HTMLDivElement>(null);
+
   const handleBrowseClick = async () => {
     try {
       const result = await window.electron.dialog.showOpenDialog({
@@ -44,11 +47,15 @@ const FileSelector = ({
   const handleDragOver = async (e: React.DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
+
+    dragAndDropAreaRef.current?.classList.add('active');
   }
 
   const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
     e.preventDefault();
+
+    removeActiveClass();
 
     const files = e.dataTransfer.files;
 
@@ -65,6 +72,16 @@ const FileSelector = ({
     }
   }
 
+  const handleOpenInFileExplorer = async() => {
+    if(selectedFolder) {
+      await window.electron.dialog.showPathInFileExplorer(selectedFolder);
+    }
+  }
+
+  const removeActiveClass = () => {
+    dragAndDropAreaRef.current?.classList.remove('active');
+  }
+
   return (
     <div className="file-selector">
 
@@ -79,13 +96,13 @@ const FileSelector = ({
         </p>
       </div>
 
-      <div className="file-selector__drag-and-drop-area" onDrop={handleDrop} onDragOver={handleDragOver}>
+      <div className="file-selector__drag-and-drop-area" ref={dragAndDropAreaRef} onDrop={handleDrop} onDragOver={handleDragOver} onDragLeave={removeActiveClass}>
         <img
           src={folderIcon}
           alt="Folder icon"
           className="drag-and-drop-area__icon"
         />
-        <button className="button bg-primary drag-and-drop-area__browse-button" onClick={() => handleBrowseClick()}>
+        <button className="button bg-primary button-with-icon drag-and-drop-area__browse-button" onClick={() => handleBrowseClick()}>
           <img src={browseFolderIcon} alt="" className="button__icon" />
           <span className="button__text">
             {selectedFolder ? 'Modify folder' : (actionButtonText ? actionButtonText : 'Browse folder')}
@@ -97,7 +114,7 @@ const FileSelector = ({
         </p>
       </div>
 
-      <p className="file-selector__selected-filepath">{selectedFolder || '...'}</p>
+      <p className={`file-selector__selected-filepath ${selectedFolder ? 'selectedFolder' : ''}`} onClick={handleOpenInFileExplorer}>{selectedFolder || '...'}</p>
     </div>
   );
 };

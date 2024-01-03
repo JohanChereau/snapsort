@@ -5,7 +5,7 @@ import {
   dialog,
   OpenDialogOptions,
 } from 'electron';
-import { checkIsFolder, sortFiles } from './utils/file/fileUtils';
+import { checkIsFolder, openPathInFileExplorer, sortFiles } from './utils/file/fileUtils';
 import path from 'node:path';
 import { SortingOptions } from './types';
 
@@ -30,6 +30,9 @@ const VITE_DEV_SERVER_URL = process.env['VITE_DEV_SERVER_URL'];
 function createWindow(): BrowserWindow {
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'Snapsort.png'),
+    width: 1220,
+    height: 720,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
@@ -96,5 +99,9 @@ app.whenReady().then(() => {
 
   ipcMain.handle('is-folder', async(_event, path) => {
     return checkIsFolder(path);
+  });
+
+  ipcMain.handle('show-path-in-explorer', async (_event, path) => {
+    await openPathInFileExplorer(path);
   })
 });

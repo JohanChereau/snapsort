@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'node:path';
+import {shell} from 'electron';
 import { FileInfo, SortingProgress } from 'electron/types';
 import { getMonthNameFromIndex } from '..';
 
@@ -120,4 +121,9 @@ function generateUniqueFileName(file: FileInfo): string {
 
 export async function checkIsFolder(path: string): Promise<boolean> {
   return !fs.lstatSync(path).isFile();
+}
+
+export async function openPathInFileExplorer(path: string): Promise<void> {
+  if(!checkIsFolder(path)) return;
+  shell.showItemInFolder(path);
 }

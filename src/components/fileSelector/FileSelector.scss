@@ -38,6 +38,10 @@
   margin-top: 1em;
 }
 
+.file-selector__drag-and-drop-area.active {
+  border: 1px dashed var(--clr-primary-400);
+}
+
 .drag-and-drop-area__icon {
   margin-inline: auto;
   width: clamp(62px, 5vw, 100px);
@@ -49,4 +53,10 @@
 
 .file-selector__selected-filepath {
   margin-top: 0.5em;
+  transition: all .2s ease-in-out;
+}
+
+.file-selector__selected-filepath.selectedFolder:is(:hover, :focus) {
+  cursor: pointer;
+  text-decoration: underline;
 }

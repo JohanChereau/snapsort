@@ -1,7 +1,7 @@
 .sorting-tool-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .file-selectors {
@@ -27,5 +27,5 @@
 
 .progress-error__name {
   color: var(--clr-accent-400);
-  margin-bottom: .2em;
+  margin-bottom: 0.2em;
 }

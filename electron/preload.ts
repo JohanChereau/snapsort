@@ -4,7 +4,7 @@ import { SortingOptions, SortingProgress } from './types';
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: withPrototype(ipcRenderer),
-  dialog: { showOpenDialog },
+  dialog: { showOpenDialog, showPathInFileExplorer },
   file: {isFolder},
   performSort: performSort,
   sortProgress: { addSortProgressListener, removeSortProgressListener },
@@ -32,6 +32,10 @@ function withPrototype(obj: Record<string, any>) {
 
 async function showOpenDialog(options: OpenDialogOptions) {
   return await ipcRenderer.invoke('show-open-dialog', options);
+}
+
+async function showPathInFileExplorer(path: string) {
+  return await ipcRenderer.invoke('show-path-in-explorer', path);
 }
 
 async function performSort(options: SortingOptions) {
@@ -165,6 +169,7 @@ declare global {
       ipcRenderer: typeof ipcRenderer;
       dialog: {
         showOpenDialog: typeof showOpenDialog;
+        showPathInFileExplorer: typeof showPathInFileExplorer;
       };
       performSort: typeof performSort;
       sortProgress: {

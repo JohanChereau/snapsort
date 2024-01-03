@@ -81,24 +81,43 @@ h1, h2, h3 {
 }
 
 .button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: clamp(.5em, 2vw, 1em);
+  display: inline-block;
 
   border: none;
   padding: .4em 1em;
   border-radius: 10px;
+  text-decoration: none;
 
   font-family: var(--ff-accent);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-medium);
   font-size: var(--fs-400);
   letter-spacing: .2px;
   cursor: pointer;
 }
 
+.button.button-with-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(.5em, 2vw, 1em);
+}
+
+.button.bg-primary {
+  color: var(--clr-neutral-900);
+}
+
 .button.bg-primary:is(:focus, :hover) {
   $bg-color: hsl(252, 92%, 74%);
+  background: lighten($color: $bg-color, $amount: 3);
+}
+
+.button.bg-secondary {
+  background: var(--clr-secondary-400);
+  color: var(--clr-neutral-100);
+}
+
+.button.bg-secondary:is(:focus, :hover) {
+  $bg-color: hsl(324, 93%, 35%);
   background: lighten($color: $bg-color, $amount: 3);
 }
 
