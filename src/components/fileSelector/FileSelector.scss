@@ -1,6 +1,6 @@
 .file-selector {
   display: grid;
-  gap: .5em;
+  gap: clamp(5px, 2vh, 20px);
   width: 100%;
   max-width: 500px;
   margin-inline: auto;
@@ -22,7 +22,6 @@
 .file-selector__title {
   font-size: var(--fs-800);
   font-weight: var(--fw-medium);
-  margin-bottom: 0.2em;
 }
 
 .file-selector__subtitle,
@@ -34,8 +33,7 @@
 .file-selector__drag-and-drop-area {
   border: 1px dashed var(--clr-accent-400);
   border-radius: 20px;
-  padding: 1em;
-  margin-top: 1em;
+  padding: .9em;
 }
 
 .file-selector__drag-and-drop-area.active {
@@ -44,15 +42,14 @@
 
 .drag-and-drop-area__icon {
   margin-inline: auto;
-  width: clamp(62px, 5vw, 100px);
+  width: clamp(52px, 5vw, 100px);
 }
 
 .drag-and-drop-area__browse-button {
-  margin: 0.8em auto;
+  margin: 0.7em auto;
 }
 
 .file-selector__selected-filepath {
-  margin-top: 0.5em;
   transition: all .2s ease-in-out;
 }
 

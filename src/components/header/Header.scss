@@ -10,10 +10,12 @@ header {
 }
 
 .header__title {
+    width: min-content;
     background-image: var(--gradient-primary);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    margin-inline: auto;
 
     font-size: var(--fs-900);
 }

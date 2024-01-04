@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
 import './HomePage.scss';
 import Footer from '@/components/footer/Footer';
+import ToolBox from '@/components/toolBox/ToolBox';
 
 const HomePage = () => {
   return (
@@ -8,7 +8,7 @@ const HomePage = () => {
       <main>
         <section className="home-section">
           <h2>Welcome</h2>
-          <Link to="/sorting-tool">Start</Link>
+          <ToolBox />
         </section>
       </main>
       <Footer />

@@ -4,9 +4,9 @@
     top: 1em;
     left: 1em;
     width: 30px;
-    transition: fill .2s ease-in-out;
+    transition: all .2s ease-in-out;
 }
 
 .home-button__icon:is(:focus, :hover) {
-    fill: var(--clr-primary-400);
+    transform: translateX(-5px);
 }

@@ -1,0 +1,29 @@
+.tool {
+    background: var(--clr-neutral-800);
+    border-radius: 10px;
+    padding: 1em;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+}
+
+.tool:is(:hover, :focus) {
+    background: var(--clr-neutral-700);
+}
+
+.tool__link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+}
+
+.tool:is(:hover, :focus) .react-icon > * {
+    transform: scaleX(-1) translateX(-100%);
+}
+
+.tool__name {
+    color: var(--clr-neutral-100);
+    font-size: var(--fs-700);
+    font-weight: var(--fw-medium);
+}

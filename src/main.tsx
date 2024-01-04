@@ -1,11 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from 'components/app/App'
+import { IconContext } from 'react-icons';
 import './index.scss'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
+    <IconContext.Provider value={{className: 'react-icon', style: {verticalAlign: 'middle'}}}>
     <App />
+    </IconContext.Provider>
   </React.StrictMode>,
 )
 
