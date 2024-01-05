@@ -8,6 +8,7 @@ import {
 import { checkIsFolder, openPathInFileExplorer, sortFiles } from './utils/file/fileUtils';
 import path from 'node:path';
 import { SortingOptions } from './types';
+import { getApplicationVersion } from './utils/application/applicationUtils';
 
 // The built directory structure
 //
@@ -91,9 +92,9 @@ app.whenReady().then(() => {
     'perform-sort',
     async (
       event,
-      { sourceFolder, destinationFolder, fileExtensions }: SortingOptions
+      { sourceFolder, destinationFolder, fileExtensions, monthNames }: SortingOptions
     ) => {
-      await sortFiles(event, sourceFolder, destinationFolder, fileExtensions);
+      await sortFiles(event, {sourceFolder, destinationFolder, fileExtensions, monthNames});
     }
   );
 
@@ -103,5 +104,9 @@ app.whenReady().then(() => {
 
   ipcMain.handle('show-path-in-explorer', async (_event, path) => {
     await openPathInFileExplorer(path);
+  })
+
+  ipcMain.handle('get-application-version', async (_event): Promise<string> => {
+    return await getApplicationVersion();
   })
 });

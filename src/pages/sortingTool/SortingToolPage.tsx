@@ -23,6 +23,7 @@ const SortingToolPage = () => {
           sourceFolder,
           destinationFolder,
           fileExtensions: ['.jpg', '.png', '.JPG', '.PNG'],
+          monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
         });
       } else {
         console.error('Source folder or export folder is not selected.');

@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('electron', {
   performSort: performSort,
   sortProgress: { addSortProgressListener, removeSortProgressListener },
   sortError: {addSortErrorListener, removeSortErrorListener},
+  application: {getVersion}
 });
 
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
@@ -40,6 +41,10 @@ async function showPathInFileExplorer(path: string) {
 
 async function performSort(options: SortingOptions) {
   return await ipcRenderer.invoke('perform-sort', options);
+}
+
+async function getVersion() {
+  return await ipcRenderer.invoke('get-application-version');
 }
 
 function addSortProgressListener(
@@ -182,6 +187,9 @@ declare global {
       }
       file: {
         isFolder: typeof isFolder;
+      }
+      application: {
+        getVersion: typeof getVersion;
       }
     };
   }

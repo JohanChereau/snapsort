@@ -1,12 +1,13 @@
 import fs from 'fs';
 import path from 'node:path';
-import {shell} from 'electron';
-import { FileInfo, SortingProgress } from 'electron/types';
+import { shell } from 'electron';
+import { FileInfo, SortingOptions, SortingProgress } from 'electron/types';
 import { getMonthNameFromIndex } from '..';
 
 export async function getAllFilesFromFolder(
   sourceFolder: string,
-  extensions: string[]
+  extensions: string[],
+  monthNames: string[]
 ): Promise<FileInfo[]> {
   let results: FileInfo[] = [];
 
@@ -20,17 +21,26 @@ export async function getAllFilesFromFolder(
 
       if (stat.isDirectory()) {
         results = results.concat(
-          await getAllFilesFromFolder(filePath, extensions)
+          await getAllFilesFromFolder(filePath, extensions, monthNames)
         );
       } else if (extensions.includes(path.extname(file))) {
         const mtime = stat.mtime;
+
+        const monthIndex: number = mtime.getMonth() + 1;
+        let monthName: string;
+
+        if(!monthNames.length || monthNames.length !== 12) {
+          monthName = getMonthNameFromIndex(monthIndex - 1);
+        } else {
+          monthName = monthNames[monthIndex - 1];
+        }
 
         results.push({
           path: filePath,
           name: file,
           mtime: stat.mtime,
           year: mtime.getFullYear().toString(),
-          month: getMonthNameFromIndex(mtime.getMonth()),
+          month: monthName,
           monthIndex: mtime.getMonth() + 1,
           day: mtime.getDate().toString(),
         });
@@ -38,7 +48,7 @@ export async function getAllFilesFromFolder(
     }
   } catch (error) {
     console.error(
-      `Une erreur est survenue lors de la lecture des fichiers : ${error}`
+      `An error occurred while reading the files : ${error}`
     );
   }
 
@@ -47,14 +57,18 @@ export async function getAllFilesFromFolder(
 
 export async function sortFiles(
   event: Electron.IpcMainInvokeEvent,
-  sourceFolder: string,
-  destinationFolder: string,
-  fileExtensions: string[]
+  {
+    sourceFolder,
+    destinationFolder,
+    fileExtensions,
+    monthNames,
+  }: SortingOptions
 ): Promise<void> {
   try {
     const files: FileInfo[] = await getAllFilesFromFolder(
       sourceFolder,
-      fileExtensions
+      fileExtensions,
+      monthNames,
     );
 
     for (let i = 0; i < files.length; i++) {
@@ -80,13 +94,32 @@ export async function sortFile(
   destinationFolder: string
 ): Promise<void> {
   try {
-    const concatenatedMonth = `${file.monthIndex} - ${file.month}`;
+    let destinationPath: string;
 
-    const destinationPath = path.join(
-      destinationFolder,
-      file.year,
-      concatenatedMonth
-    );
+    const concatenatedMonth = `${file.monthIndex.toString().padStart(2, '0')} - ${file.month}`;
+
+    // We check if the year folder exists.
+    const yearFolder = path.join(destinationFolder, file.year);
+    if(fs.existsSync(yearFolder)) {
+
+      // List of all folders in the year folder
+      const existingFolders = fs.readdirSync(yearFolder);
+
+      // Find a folder with the same month index
+      const existingFolder = existingFolders.find(folder => folder.startsWith(file.monthIndex.toString().padStart(2, '0')));
+
+      if(existingFolder) {
+        // Use full path for existing folder
+        destinationPath = path.join(yearFolder, existingFolder);
+      } else {
+        destinationPath = path.join(yearFolder, concatenatedMonth);
+      }
+    } else {
+      // Create the year folder if it doesn't exist
+      fs.mkdirSync(yearFolder);
+      destinationPath = path.join(yearFolder, concatenatedMonth);
+    }
+
     let destinationFilePath = path.join(destinationPath, file.name);
 
     // Create the destination folder if it doesn't exist
@@ -100,7 +133,7 @@ export async function sortFile(
       );
     }
 
-    // Copy the file to the destination folder
+    // Copy file to destination folder
     fs.copyFileSync(file.path, destinationFilePath);
   } catch (error) {
     console.error(
@@ -124,6 +157,6 @@ export async function checkIsFolder(path: string): Promise<boolean> {
 }
 
 export async function openPathInFileExplorer(path: string): Promise<void> {
-  if(!checkIsFolder(path)) return;
+  if (!checkIsFolder(path)) return;
   shell.showItemInFolder(path);
 }

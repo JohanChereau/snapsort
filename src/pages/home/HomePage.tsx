@@ -1,5 +1,5 @@
-import './HomePage.scss';
 import Footer from '@/components/footer/Footer';
+import './HomePage.scss';
 import ToolBox from '@/components/toolBox/ToolBox';
 
 const HomePage = () => {

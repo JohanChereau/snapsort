@@ -1,21 +1,27 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from 'components/app/App'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from 'components/app/App';
 import { IconContext } from 'react-icons';
-import './index.scss'
+import AppInfoProvider from './contexts/AppInfoContext';
+import './index.scss';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <IconContext.Provider value={{className: 'react-icon', style: {verticalAlign: 'middle'}}}>
-    <App />
+    <IconContext.Provider
+      value={{ className: 'react-icon', style: { verticalAlign: 'middle' } }}
+    >
+      <AppInfoProvider>
+        <App />
+      </AppInfoProvider>
+      
     </IconContext.Provider>
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
 
 // Remove Preload scripts loading
-postMessage({ payload: 'removeLoading' }, '*')
+postMessage({ payload: 'removeLoading' }, '*');
 
 // Use contextBridge
 window.electron.ipcRenderer.on('main-process-message', (_event, message) => {
-  console.log(message)
-})
+  console.log(message);
+});

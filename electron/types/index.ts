@@ -2,6 +2,7 @@ export type SortingOptions = {
     sourceFolder: string;
     destinationFolder: string;
     fileExtensions: string[];
+    monthNames: string[];
 }
 
 export type FileInfo = {
