@@ -9,7 +9,8 @@ contextBridge.exposeInMainWorld('electron', {
   performSort: performSort,
   sortProgress: { addSortProgressListener, removeSortProgressListener },
   sortError: {addSortErrorListener, removeSortErrorListener},
-  application: {getVersion}
+  application: {getVersion},
+  preferences: {getFileExtensionsPreferences, setFileExtensionsPreferences}
 });
 
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
@@ -70,6 +71,15 @@ function removeSortErrorListener() {
 
 async function isFolder(path: string) {
   return await ipcRenderer.invoke('is-folder', path);
+}
+
+// User preferences
+async function getFileExtensionsPreferences(): Promise<string[]> {
+  return ipcRenderer.invoke('get-file-extensions-preferences');
+}
+
+async function setFileExtensionsPreferences(fileExtensions: string[]): Promise<void> {
+  return ipcRenderer.invoke('set-file-extensions-preferences', fileExtensions);
 }
 
 // --------- Preload scripts loading ---------
@@ -186,6 +196,10 @@ declare global {
       }
       application: {
         getVersion: typeof getVersion;
+      },
+      preferences: {
+        getFileExtensionsPreferences: typeof getFileExtensionsPreferences;
+        setFileExtensionsPreferences: typeof setFileExtensionsPreferences;
       }
     };
   }

@@ -1,0 +1,25 @@
+.file-extensions__list {
+    list-style-type: none;
+    padding: 0;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.file-extensions__select-all-action {
+    width: max-content;
+    margin-left: auto;
+}
+
+.file-extensions__select-all-action > label{
+    margin-left: .3em;
+}
+
+.file-extensions__form-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+

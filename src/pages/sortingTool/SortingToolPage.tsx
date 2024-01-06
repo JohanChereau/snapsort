@@ -4,16 +4,23 @@ import FileSelector from 'components/fileSelector/FileSelector';
 import { SortingProgress } from 'electron/types';
 import ProgressInfos from 'components/progressInfos/ProgressInfos';
 import HomeButton from '@/components/homeButton/HomeButton';
+import FileExtensionsModal from '@/components/modals/fileExtensions/FileExtensionsModal';
+import { arraysAreEqual } from '@/utils/array/arrayUtils';
+import { truncateString } from '@/utils/string/stringUtils';
 
 const SortingToolPage = () => {
   const [sourceFolder, setSourceFolder] = useState<string | null>(null);
   const [destinationFolder, setDestinationFolder] = useState<string | null>(null);
+  const [fileExtensions, setFileExtensions] = useState<string[]>([]);
 
   const isReadyToSort: boolean = sourceFolder && destinationFolder ? true : false;
 
   const [isSorting, setIsSorting] = useState<boolean>(false);
   const [sortProgress, setSortProgress] = useState<SortingProgress>({sortedIndex: 0, total: 0, path: ''});
   const [sortError, setSortError] = useState<Error | null>(null);
+
+  //Modals
+  const[openFileExtensionsModal, setOpenFileExtensionsModal] = useState<boolean>(false);
 
   async function handleSort() {
     try {
@@ -22,7 +29,7 @@ const SortingToolPage = () => {
         await window.electron.performSort({
           sourceFolder,
           destinationFolder,
-          fileExtensions: ['.jpg', '.png', '.JPG', '.PNG'],
+          fileExtensions: fileExtensions,
           monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
         });
       } else {
@@ -34,21 +41,50 @@ const SortingToolPage = () => {
     }
   }
 
+  const getFileExtensionsFromModal = (newModalFileExtensions: string[]): void => {
+
+    if(arraysAreEqual(newModalFileExtensions, fileExtensions)) return;
+
+    //If the modal has modified the extensions, we save them
+    setFileExtensions(newModalFileExtensions);
+    saveFileExtensionsPreferences(newModalFileExtensions);
+  }
+
+  const getFileExtensionsPreferences = async (): Promise<void> => {
+    const fileExtensions = await window.electron.preferences.getFileExtensionsPreferences();
+
+    if(fileExtensions.length) {
+      setFileExtensions(fileExtensions);
+      console.log('Getting preferences : ', fileExtensions);
+    }
+  }
+
+  const saveFileExtensionsPreferences = async (newFileExtensions: string[]): Promise<void> => {
+    if(newFileExtensions.length) {
+
+      await window.electron.preferences.setFileExtensionsPreferences(newFileExtensions);
+      console.log('Setting new preferences : ', newFileExtensions);
+    }
+  }
+
   useEffect(() => {
+    // Listeners
     window.electron.sortProgress.addSortProgressListener((_event, progress) => {
       setSortProgress(progress);
     });
 
     window.electron.sortError.addSortErrorListener((_event, error) => {
       setSortError(error);
-    })
+    });
+
+    // User preferences
+    getFileExtensionsPreferences();
   
     return () => {
       window.electron.sortProgress.removeSortProgressListener();
       window.electron.sortError.removeSortErrorListener();
     }
   }, [])
-  
 
   return (
     <main>
@@ -77,6 +113,20 @@ const SortingToolPage = () => {
           />
         </div>
 
+        <div className="sorting-tool__settings container">
+
+          <div className="sorting-tool__setting">
+            <button className='button bg-secondary' onClick={() => setOpenFileExtensionsModal(true)}>{`File extensions (${fileExtensions.length})`}</button>
+            <p>{truncateString(fileExtensions.map(extension => {
+              return (extension.toString() + ', ')
+            }).join(' '), 60,)}</p>
+          </div>
+
+          <div className="sorting-tool__setting"><button className='button bg-secondary'>Custom months</button>
+          <p>Janvier, Février ...</p>
+          </div>
+        </div>
+
         <button
           className="button bg-primary sorting-tool__sort-button"
           onClick={() => handleSort()}
@@ -84,6 +134,10 @@ const SortingToolPage = () => {
         >
           Sort
         </button>
+
+        <FileExtensionsModal open={openFileExtensionsModal} onClose={() => setOpenFileExtensionsModal(false)}
+        defaultExtensions={fileExtensions}
+        submitFileExtensions={getFileExtensionsFromModal}/>
 
         {isSorting && <ProgressInfos progressOptions={sortProgress}/>}
         

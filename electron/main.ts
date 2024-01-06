@@ -9,6 +9,7 @@ import { checkIsFolder, openPathInFileExplorer, sortFiles } from './utils/file/f
 import path from 'node:path';
 import { SortingOptions } from './types';
 import { getApplicationVersion } from './utils/application/applicationUtils';
+import { getFileExtensionsPreferences, setFileExtensionsPreferences } from './settings';
 
 // The built directory structure
 //
@@ -104,9 +105,18 @@ app.whenReady().then(() => {
 
   ipcMain.handle('show-path-in-explorer', async (_event, path) => {
     await openPathInFileExplorer(path);
-  })
+  });
 
   ipcMain.handle('get-application-version', async (_event): Promise<string> => {
     return await getApplicationVersion();
+  });
+
+  // User preferences
+  ipcMain.handle('get-file-extensions-preferences', async (_event): Promise<string[]> => {
+    return getFileExtensionsPreferences();
+  })
+
+  ipcMain.handle('set-file-extensions-preferences', async (_event, fileExtensions: string[]): Promise<void> => {
+    return setFileExtensionsPreferences(fileExtensions);
   })
 });
