@@ -1,13 +1,15 @@
+import { useEffect, useState, useRef } from 'react';
+import { gsap } from 'gsap';
 import { FaLinkedin } from 'react-icons/fa';
 import { FaGithub } from 'react-icons/fa';
 import { FaGlobe } from 'react-icons/fa';
 import './Footer.scss';
-import { useEffect, useState } from 'react';
 
 const Footer = () => {
   const ICONS_SIZE = 1.8;
 
   const [applicationVersion, setApplicationVersion] = useState<string | null>(null);
+  const footerRef = useRef<HTMLDivElement | null>(null);
 
   const getAppVersion = async () => {
     const version = await window.electron.application.getVersion();
@@ -19,12 +21,16 @@ const Footer = () => {
 
   useEffect(() => {
     getAppVersion();
+
+    if(footerRef.current) {
+      gsap.fromTo(footerRef.current, {opacity: 0}, {duration: 1, opacity: 1})
+    }
   
   }, [])
   
 
   return (
-    <footer>
+    <footer ref={footerRef}>
       <p className="footer__software-version darken-text">{`Snapsort - version ${applicationVersion || 'unknown'}`}</p>
       <p className="footer__copyrights">
         Copyright © 2024 Johan Chereau

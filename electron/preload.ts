@@ -109,20 +109,16 @@ const safeDOM = {
  * https://matejkustec.github.io/SpinThatShit
  */
 function useLoading() {
-  const className = `loaders-css__square-spin`;
+  const className = `loaders-css__logo-spin`;
   const styleContent = `
-@keyframes square-spin {
-  25% { transform: perspective(100px) rotateX(180deg) rotateY(0); }
-  50% { transform: perspective(100px) rotateX(180deg) rotateY(180deg); }
-  75% { transform: perspective(100px) rotateX(0) rotateY(180deg); }
-  100% { transform: perspective(100px) rotateX(0) rotateY(0); }
+@keyframes logo-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
-.${className} > div {
-  animation-fill-mode: both;
-  width: 50px;
-  height: 50px;
-  background: #fff;
-  animation: square-spin 3s 0s cubic-bezier(0.09, 0.57, 0.49, 0.9) infinite;
+.${className} > img {
+  animation: logo-spin 2s linear infinite;
+  width: 100px;
+  height: 100px;
 }
 .app-loading-wrap {
   position: fixed;
@@ -133,17 +129,17 @@ function useLoading() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #282c34;
+  background: hsl(252, 100%, 3%);
   z-index: 9;
 }
     `;
-  const oStyle = document.createElement('style');
-  const oDiv = document.createElement('div');
-
-  oStyle.id = 'app-loading-style';
-  oStyle.innerHTML = styleContent;
-  oDiv.className = 'app-loading-wrap';
-  oDiv.innerHTML = `<div class="${className}"><div></div></div>`;
+    const oStyle = document.createElement('style');
+    const oDiv = document.createElement('div');
+  
+    oStyle.id = 'app-loading-style';
+    oStyle.innerHTML = styleContent;
+    oDiv.className = 'app-loading-wrap';
+    oDiv.innerHTML = `<div class="${className}"><img src="/Snapsort.png" alt="Snapsort logo"></div>`;
 
   return {
     appendLoading() {
