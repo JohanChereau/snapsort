@@ -1,7 +1,7 @@
-import { SortingProgress } from 'electron/types';
+import { ProgressStatus } from 'electron/types';
 import './ProgressInfos.scss';
 
-const ProgressInfos = ({progressOptions}: {progressOptions: SortingProgress}) => {
+const ProgressInfos = ({progressOptions}: {progressOptions: ProgressStatus}) => {
 
   const {path, sortedIndex, total} = progressOptions;
   const progressPercent = (sortedIndex / total) * 100;

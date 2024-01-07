@@ -35,7 +35,7 @@ const ToolBox = () => {
         iconColor={ICONS_COLOR}
         iconSize={`${ICONS_SIZE}em`}
         name="Analyze folders"
-        linkTo="/"
+        linkTo="/analyze-tool"
       />
     </ul>
   );

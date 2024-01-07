@@ -1,26 +1,29 @@
 import { useState, useEffect } from 'react';
 import './SortingToolPage.scss';
 import FileSelector from 'components/fileSelector/FileSelector';
-import { SortingProgress } from 'electron/types';
+import { ProgressStatus } from 'electron/types';
 import ProgressInfos from 'components/progressInfos/ProgressInfos';
 import HomeButton from '@/components/homeButton/HomeButton';
 import FileExtensionsModal from '@/components/modals/fileExtensions/FileExtensionsModal';
 import { arraysAreEqual } from '@/utils/array/arrayUtils';
 import { truncateString } from '@/utils/string/stringUtils';
+import CustomMonthsModal from '@/components/modals/customMonths/CustomMonthsModal';
 
 const SortingToolPage = () => {
   const [sourceFolder, setSourceFolder] = useState<string | null>(null);
   const [destinationFolder, setDestinationFolder] = useState<string | null>(null);
   const [fileExtensions, setFileExtensions] = useState<string[]>([]);
+  const [customMonths, setCustomMonths] = useState<string[]>([]);
 
   const isReadyToSort: boolean = sourceFolder && destinationFolder ? true : false;
 
   const [isSorting, setIsSorting] = useState<boolean>(false);
-  const [sortProgress, setSortProgress] = useState<SortingProgress>({sortedIndex: 0, total: 0, path: ''});
+  const [sortProgress, setSortProgress] = useState<ProgressStatus>({sortedIndex: 0, total: 0, path: ''});
   const [sortError, setSortError] = useState<Error | null>(null);
 
   //Modals
   const[openFileExtensionsModal, setOpenFileExtensionsModal] = useState<boolean>(false);
+  const[openCustomMonthsModal, setOpenCustomMonthsModal] = useState<boolean>(false);
 
   async function handleSort() {
     try {
@@ -30,14 +33,13 @@ const SortingToolPage = () => {
           sourceFolder,
           destinationFolder,
           fileExtensions: fileExtensions,
-          monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+          monthNames: customMonths,
         });
       } else {
         console.error('Source folder or export folder is not selected.');
       }
     } catch (error) {
       console.error('Error during sorting:', error);
-      // Gérez les erreurs ici.
     }
   }
 
@@ -48,6 +50,15 @@ const SortingToolPage = () => {
     //If the modal has modified the extensions, we save them
     setFileExtensions(newModalFileExtensions);
     saveFileExtensionsPreferences(newModalFileExtensions);
+  }
+
+  const getCustomMonthsFromModal = (newModalCustomMonths: string[]): void => {
+
+    if(arraysAreEqual(newModalCustomMonths, customMonths)) return;
+
+    //If the modal has modified the months, we save them
+    setCustomMonths(newModalCustomMonths);
+    saveCustomMonthsPreferences(newModalCustomMonths);
   }
 
   const getFileExtensionsPreferences = async (): Promise<void> => {
@@ -67,6 +78,23 @@ const SortingToolPage = () => {
     }
   }
 
+  const getCustomMonthsPreferences = async (): Promise<void> => {
+    const customMonths = await window.electron.preferences.getCustomMonthsPreferences();
+
+    if(customMonths.length) {
+      setCustomMonths(customMonths);
+      console.log('Getting preferences : ', customMonths);
+    }
+  }
+
+  const saveCustomMonthsPreferences = async (newCustomMonths: string[]): Promise<void> => {
+    if(newCustomMonths.length) {
+
+      await window.electron.preferences.setCustomMonthsPreferences(newCustomMonths);
+      console.log('Setting new preferences : ', newCustomMonths);
+    }
+  }
+
   useEffect(() => {
     // Listeners
     window.electron.sortProgress.addSortProgressListener((_event, progress) => {
@@ -79,12 +107,13 @@ const SortingToolPage = () => {
 
     // User preferences
     getFileExtensionsPreferences();
+    getCustomMonthsPreferences();
   
     return () => {
       window.electron.sortProgress.removeSortProgressListener();
       window.electron.sortError.removeSortErrorListener();
     }
-  }, [])
+  }, []);
 
   return (
     <main>
@@ -113,7 +142,7 @@ const SortingToolPage = () => {
           />
         </div>
 
-        <div className="sorting-tool__settings container">
+        {!isSorting && <div className="sorting-tool__settings container">
 
           <div className="sorting-tool__setting">
             <button className='button bg-secondary' onClick={() => setOpenFileExtensionsModal(true)}>{`File extensions (${fileExtensions.length})`}</button>
@@ -122,22 +151,28 @@ const SortingToolPage = () => {
             }).join(' '), 60,)}</p>
           </div>
 
-          <div className="sorting-tool__setting"><button className='button bg-secondary'>Custom months</button>
-          <p>Janvier, Février ...</p>
+          <div className="sorting-tool__setting"><button className='button bg-secondary' onClick={() => setOpenCustomMonthsModal(true)}>Custom months</button>
+          <p>{truncateString(customMonths.map(month => {
+            return (month.toString() + ', ')
+          }).join(' '), 60)}</p>
           </div>
-        </div>
+        </div>}
 
-        <button
+        {!isSorting && <button
           className="button bg-primary sorting-tool__sort-button"
           onClick={() => handleSort()}
           disabled={!isReadyToSort}
         >
           Sort
-        </button>
+        </button>}
 
         <FileExtensionsModal open={openFileExtensionsModal} onClose={() => setOpenFileExtensionsModal(false)}
         defaultExtensions={fileExtensions}
         submitFileExtensions={getFileExtensionsFromModal}/>
+
+        <CustomMonthsModal open={openCustomMonthsModal} onClose={() => setOpenCustomMonthsModal(false)}
+        defaultMonths={customMonths}
+        submitCustomMonths={getCustomMonthsFromModal}/>
 
         {isSorting && <ProgressInfos progressOptions={sortProgress}/>}
         

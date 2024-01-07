@@ -1,13 +1,13 @@
 import fs from 'fs';
 import path from 'node:path';
 import { shell } from 'electron';
-import { FileInfo, SortingOptions, SortingProgress } from 'electron/types';
+import { FileInfo, SortingOptions, ProgressStatus, AnalyzingOptions } from 'electron/types';
 import { getMonthNameFromIndex } from '..';
 
 export async function getAllFilesFromFolder(
   sourceFolder: string,
-  extensions: string[],
-  monthNames: string[]
+  extensions?: string[],
+  monthNames?: string[]
 ): Promise<FileInfo[]> {
   let results: FileInfo[] = [];
 
@@ -23,13 +23,15 @@ export async function getAllFilesFromFolder(
         results = results.concat(
           await getAllFilesFromFolder(filePath, extensions, monthNames)
         );
-      } else if (extensions.includes(path.extname(file))) {
+
+        //Take extensions into account ?
+      } else if (extensions ? extensions.includes(path.extname(file).toLowerCase()) : true) {
         const mtime = stat.mtime;
 
         const monthIndex: number = mtime.getMonth() + 1;
         let monthName: string;
 
-        if(!monthNames.length || monthNames.length !== 12) {
+        if(!monthNames?.length || monthNames?.length !== 12) {
           monthName = getMonthNameFromIndex(monthIndex - 1);
         } else {
           monthName = monthNames[monthIndex - 1];
@@ -75,7 +77,7 @@ export async function sortFiles(
       const file = files[i];
       await sortFile(file, destinationFolder);
 
-      const progress: SortingProgress = {
+      const progress: ProgressStatus = {
         sortedIndex: i + 1,
         path: file.path,
         total: files.length,
@@ -150,6 +152,64 @@ function generateUniqueFileName(file: FileInfo): string {
   const ext = path.extname(file.name);
   const base = path.basename(file.name, ext);
   return `SNAPSORT_${timestamp}_${base}${ext}`;
+}
+
+export async function analyzeFiles(
+  event: Electron.IpcMainInvokeEvent,
+  {
+    sourceFolder
+  }: AnalyzingOptions
+): Promise<FileInfo[]> {
+  const incorrectlyStoredFiles: FileInfo[] = [];
+
+  try {
+    
+      const files = await getAllFilesFromFolder(sourceFolder);
+
+      for(let i = 0; i < files.length; i ++) {
+        const file = files[i];
+
+        const correctlyStored = await isFileCorrectlyStored(file);
+
+        if(!correctlyStored) {
+          incorrectlyStoredFiles.push(file);
+        }
+
+        const progression: ProgressStatus = {
+          sortedIndex: i + 1,
+          total: files.length,
+          path: file.path,
+        }
+
+        // Send a progress event
+      event.sender.send('analyze-progress', progression);
+      }
+
+  } catch (error) {
+    event.sender.send('analyze-error', { error: error });
+  }
+
+  return incorrectlyStoredFiles;
+}
+
+export async function isFileCorrectlyStored(
+  file: FileInfo
+): Promise<boolean> {
+  try {
+    const parsedPath = path.parse(file.path);
+    const directorySegments = parsedPath.dir.split(path.sep);
+
+    if(directorySegments.includes(file.year) && directorySegments[directorySegments.length - 1].startsWith(file.monthIndex.toString().padStart(2, '0'))) {
+      return true;
+    }
+
+  } catch (error) {
+    console.error(
+      `An error occurred while analyzing the file ${file.path}: ${error}`
+    );
+  }
+
+  return false;
 }
 
 export async function checkIsFolder(path: string): Promise<boolean> {

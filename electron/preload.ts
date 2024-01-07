@@ -1,16 +1,27 @@
 import { OpenDialogOptions, contextBridge, ipcRenderer } from 'electron';
-import { SortingOptions, SortingProgress } from './types';
+import { SortingOptions, ProgressStatus, AnalyzingOptions } from './types';
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: withPrototype(ipcRenderer),
   dialog: { showOpenDialog, showPathInFileExplorer },
-  file: {isFolder},
+  file: { isFolder },
   performSort: performSort,
+  performAnalyze: performAnalyze,
   sortProgress: { addSortProgressListener, removeSortProgressListener },
-  sortError: {addSortErrorListener, removeSortErrorListener},
-  application: {getVersion},
-  preferences: {getFileExtensionsPreferences, setFileExtensionsPreferences}
+  analyzeProgress: {
+    addAnalyzeProgressListener,
+    removeAnalyzeProgressListener,
+  },
+  sortError: { addSortErrorListener, removeSortErrorListener },
+  analyzeError: { addAnalyzeErrorListener, removeAnalyzeErrorListener },
+  application: { getVersion },
+  preferences: {
+    getFileExtensionsPreferences,
+    setFileExtensionsPreferences,
+    getCustomMonthsPreferences,
+    setCustomMonthsPreferences,
+  },
 });
 
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
@@ -40,19 +51,22 @@ async function showPathInFileExplorer(path: string) {
   return await ipcRenderer.invoke('show-path-in-explorer', path);
 }
 
+// Perform actions
 async function performSort(options: SortingOptions) {
   return await ipcRenderer.invoke('perform-sort', options);
+}
+
+async function performAnalyze(options: AnalyzingOptions) {
+  return await ipcRenderer.invoke('perform-analyze', options);
 }
 
 async function getVersion() {
   return await ipcRenderer.invoke('get-application-version');
 }
 
+// Listeners
 function addSortProgressListener(
-  callback: (
-    event: Electron.IpcRendererEvent,
-    progress: SortingProgress
-  ) => void
+  callback: (event: Electron.IpcRendererEvent, progress: ProgressStatus) => void
 ) {
   ipcRenderer.on('sort-progress', callback);
 }
@@ -61,12 +75,34 @@ function removeSortProgressListener() {
   ipcRenderer.removeAllListeners('sort-progress');
 }
 
-function addSortErrorListener(callback: (event: Electron.IpcRendererEvent, error: Error) => void) {
+function addAnalyzeProgressListener(
+  callback: (event: Electron.IpcRendererEvent, progress: ProgressStatus) => void
+) {
+  ipcRenderer.on('analyze-progress', callback);
+}
+
+function removeAnalyzeProgressListener() {
+  ipcRenderer.removeAllListeners('analyze-progress');
+}
+
+function addSortErrorListener(
+  callback: (event: Electron.IpcRendererEvent, error: Error) => void
+) {
   ipcRenderer.on('sort-error', callback);
 }
 
 function removeSortErrorListener() {
   ipcRenderer.removeAllListeners('sort-error');
+}
+
+function addAnalyzeErrorListener(
+  callback: (event: Electron.IpcRendererEvent, error: Error) => void
+) {
+  ipcRenderer.on('analyze-error', callback);
+}
+
+function removeAnalyzeErrorListener() {
+  ipcRenderer.removeAllListeners('analyze-error');
 }
 
 async function isFolder(path: string) {
@@ -78,8 +114,20 @@ async function getFileExtensionsPreferences(): Promise<string[]> {
   return ipcRenderer.invoke('get-file-extensions-preferences');
 }
 
-async function setFileExtensionsPreferences(fileExtensions: string[]): Promise<void> {
+async function setFileExtensionsPreferences(
+  fileExtensions: string[]
+): Promise<void> {
   return ipcRenderer.invoke('set-file-extensions-preferences', fileExtensions);
+}
+
+async function getCustomMonthsPreferences(): Promise<string[]> {
+  return ipcRenderer.invoke('get-custom-months-preferences');
+}
+
+async function setCustomMonthsPreferences(
+  customMonths: string[]
+): Promise<void> {
+  return ipcRenderer.invoke('set-custom-months-preferences', customMonths);
 }
 
 // --------- Preload scripts loading ---------
@@ -143,13 +191,13 @@ function useLoading() {
   z-index: 9;
 }
     `;
-    const oStyle = document.createElement('style');
-    const oDiv = document.createElement('div');
-  
-    oStyle.id = 'app-loading-style';
-    oStyle.innerHTML = styleContent;
-    oDiv.className = 'app-loading-wrap';
-    oDiv.innerHTML = `<div class="${className}"><img src="/Snapsort.png" alt="Snapsort logo"></div>`;
+  const oStyle = document.createElement('style');
+  const oDiv = document.createElement('div');
+
+  oStyle.id = 'app-loading-style';
+  oStyle.innerHTML = styleContent;
+  oDiv.className = 'app-loading-wrap';
+  oDiv.innerHTML = `<div class="${className}"><img src="/Snapsort.png" alt="Snapsort logo"></div>`;
 
   return {
     appendLoading() {
@@ -183,24 +231,35 @@ declare global {
         showPathInFileExplorer: typeof showPathInFileExplorer;
       };
       performSort: typeof performSort;
+      performAnalyze: typeof performAnalyze;
       sortProgress: {
         addSortProgressListener: typeof addSortProgressListener;
         removeSortProgressListener: typeof removeSortProgressListener;
       };
+      analyzeProgress: {
+        addAnalyzeProgressListener: typeof addAnalyzeProgressListener;
+        removeAnalyzeProgressListener: typeof removeAnalyzeProgressListener;
+      };
       sortError: {
         addSortErrorListener: typeof addSortErrorListener;
         removeSortErrorListener: typeof removeSortErrorListener;
-      }
+      };
+      analyzeError: {
+        addAnalyzeErrorListener: typeof addAnalyzeErrorListener;
+        removeAnalyzeErrorListener: typeof removeAnalyzeErrorListener;
+      };
       file: {
         isFolder: typeof isFolder;
-      }
+      };
       application: {
         getVersion: typeof getVersion;
-      },
+      };
       preferences: {
         getFileExtensionsPreferences: typeof getFileExtensionsPreferences;
         setFileExtensionsPreferences: typeof setFileExtensionsPreferences;
-      }
+        getCustomMonthsPreferences: typeof getCustomMonthsPreferences;
+        setCustomMonthsPreferences: typeof setCustomMonthsPreferences;
+      };
     };
   }
 }

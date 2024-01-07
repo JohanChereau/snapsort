@@ -5,11 +5,11 @@ import {
   dialog,
   OpenDialogOptions,
 } from 'electron';
-import { checkIsFolder, openPathInFileExplorer, sortFiles } from './utils/file/fileUtils';
+import { analyzeFiles, checkIsFolder, openPathInFileExplorer, sortFiles } from './utils/file/fileUtils';
 import path from 'node:path';
-import { SortingOptions } from './types';
+import { AnalyzingOptions, FileInfo, SortingOptions } from './types';
 import { getApplicationVersion } from './utils/application/applicationUtils';
-import { getFileExtensionsPreferences, setFileExtensionsPreferences } from './settings';
+import { getCustomMonthsPreferences, getFileExtensionsPreferences, setCustomMonthsPreferences, setFileExtensionsPreferences } from './settings';
 
 // The built directory structure
 //
@@ -39,6 +39,7 @@ function createWindow(): BrowserWindow {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       contextIsolation: true,
+      webSecurity: false,
     },
   });
 
@@ -99,6 +100,10 @@ app.whenReady().then(() => {
     }
   );
 
+  ipcMain.handle('perform-analyze', async (event, {sourceFolder}: AnalyzingOptions): Promise<FileInfo[]> => {
+    return await analyzeFiles(event, {sourceFolder});
+  })
+
   ipcMain.handle('is-folder', async(_event, path) => {
     return checkIsFolder(path);
   });
@@ -114,9 +119,17 @@ app.whenReady().then(() => {
   // User preferences
   ipcMain.handle('get-file-extensions-preferences', async (_event): Promise<string[]> => {
     return getFileExtensionsPreferences();
-  })
+  });
 
   ipcMain.handle('set-file-extensions-preferences', async (_event, fileExtensions: string[]): Promise<void> => {
     return setFileExtensionsPreferences(fileExtensions);
-  })
+  });
+
+  ipcMain.handle('get-custom-months-preferences', async (_event): Promise<string[]> => {
+    return getCustomMonthsPreferences();
+  });
+
+  ipcMain.handle('set-custom-months-preferences', async (_event, customMonths: string[]): Promise<void> => {
+    return setCustomMonthsPreferences(customMonths);
+  });
 });

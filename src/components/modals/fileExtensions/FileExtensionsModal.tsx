@@ -10,9 +10,9 @@ interface FileExtensionsModalProps {
 }
 
 const EXTENSIONS: { [key: string]: string[] } = {
-  image: ['.jpg', '.png'],
-  video: ['.mp4', '.mov'],
-  text: ['.txt', '.pdf'],
+  image: ['.jpeg', '.jpg', '.png', '.gif', '.bmp', '.ico', '.svg', '.tiff', '.raw', '.cr2', '.nef', '.rw2', '.arw', '.raf', '.pef', '.dng'],
+  video: ['.mp4', '.avi', '.mov'],
+  text: ['.txt', '.doc', '.docx', '.odt', '.pdf', '.html', '.htm'],
 };
 
 const FileExtensionsModal = ({
@@ -62,7 +62,9 @@ const FileExtensionsModal = ({
   };
 
   useEffect(() => {
-    setSelectedExtensions(defaultExtensions);
+    if(defaultExtensions) {
+      setSelectedExtensions(defaultExtensions);
+    }
   }, [defaultExtensions]);
 
   if (!open) return null;

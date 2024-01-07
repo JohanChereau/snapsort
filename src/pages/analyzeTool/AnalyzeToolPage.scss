@@ -1,0 +1,35 @@
+.analyze-tool-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.analyze-results__list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 1rem;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.analyze-results__item {
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+}
+
+.analyze-results__item:is(:focus, :hover) {
+  transform: scale(1.05);
+}
+
+.analyze-results__item > img {
+  image-rendering: optimizeSpeed;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: .5rem;
+}

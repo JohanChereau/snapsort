@@ -4,6 +4,7 @@ import SortingToolPage from '@/pages/sortingTool/SortingToolPage';
 import Header from 'components/header/Header';
 import '../modals/Modal.scss';
 import './App.scss';
+import AnalyzeToolPage from '@/pages/analyzeTool/AnalyzeToolPage';
 
 const router = createHashRouter([
   {
@@ -13,6 +14,10 @@ const router = createHashRouter([
   {
     path: '/sorting-tool',
     element: <SortingToolPage />
+  },
+  {
+    path: '/analyze-tool',
+    element: <AnalyzeToolPage />
   }
 ]);
 

@@ -1,0 +1,62 @@
+.custom-months__list {
+    list-style-type: none;
+    padding: 2em 0;
+    margin-top: 6em; 
+}
+
+$month-position: 1;
+
+@for $i from $month-position through 12 {
+  .custom-months__item[data-position='#{$i}'] {
+    grid-area: month-#{$i};
+  }
+}
+
+.custom-months__inputs {
+    display: grid;
+    margin-top: .5rem;
+}
+
+.custom-months__inputs > label {
+    font-family: var(--ff-accent);
+    font-weight: var(--fw-bold);
+    margin-bottom: .5em;
+}
+
+.custom-months__inputs > input {
+    border-radius: 10px;
+    padding: .5em 1em;
+    max-width: 200px;
+    border: none;
+    background-color: var(--clr-neutral-700);
+    color: var(--clr-neutral-100);
+}
+
+.custom-months__form-actions {
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+}
+
+@media (min-width: 600px) {
+    .custom-months__list {
+        display: grid;
+        gap: 1rem;
+        grid-template-areas:
+        "month-1 month-7"
+        "month-2 month-8"
+        "month-3 month-9"
+        "month-4 month-10"
+        "month-5 month-11"
+        "month-6 month-12";
+        align-items: center;
+        align-content: center;
+        margin-top: 0;
+
+    }
+}
+
+
+

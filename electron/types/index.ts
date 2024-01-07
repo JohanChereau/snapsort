@@ -5,6 +5,10 @@ export type SortingOptions = {
     monthNames: string[];
 }
 
+export type AnalyzingOptions = {
+    sourceFolder: string;
+}
+
 export type FileInfo = {
     path: string;
     name: string;
@@ -15,7 +19,7 @@ export type FileInfo = {
     day: string;
 }
 
-export type SortingProgress = {
+export type ProgressStatus = {
     sortedIndex: number;
     total: number;
     path: string;
