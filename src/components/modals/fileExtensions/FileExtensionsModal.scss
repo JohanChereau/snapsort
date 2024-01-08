@@ -12,8 +12,27 @@
     margin-left: auto;
 }
 
-.file-extensions__select-all-action > label{
-    margin-left: .3em;
+#select-all {
+    accent-color: var(--clr-primary-400);
+    margin-right: .3rem;
+}
+
+.file-extensions__fieldset {
+    border: 1px solid var(--clr-neutral-200);
+    border-radius: 10px;
+}
+
+
+
+.file-extensions__legend {
+    font-weight: var(--fw-bold);
+    font-family: var(--ff-accent);
+    color: var(--clr-neutral-200);
+}
+
+.file-extensions__input {
+    accent-color: var(--clr-accent-400);
+    margin-right: .5rem;
 }
 
 .file-extensions__form-actions {

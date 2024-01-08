@@ -2,14 +2,9 @@ import {
   app,
   BrowserWindow,
   ipcMain,
-  dialog,
-  OpenDialogOptions,
 } from 'electron';
-import { analyzeFiles, checkIsFolder, openPathInFileExplorer, sortFiles } from './utils/file/fileUtils';
 import path from 'node:path';
-import { AnalyzingOptions, FileInfo, SortingOptions } from './types';
-import { getApplicationVersion } from './utils/application/applicationUtils';
-import { getCustomMonthsPreferences, getFileExtensionsPreferences, setCustomMonthsPreferences, setFileExtensionsPreferences } from './settings';
+import { loadHandlers } from './handlers/index';
 
 // The built directory structure
 //
@@ -78,58 +73,6 @@ app.on('activate', () => {
 
 app.whenReady().then(() => {
   const mainWindow = createWindow();
+  loadHandlers(ipcMain, mainWindow);
 
-  ipcMain.handle(
-    'show-open-dialog',
-    async (_event, options: OpenDialogOptions) => {
-      if (mainWindow) {
-        return await dialog.showOpenDialog(mainWindow, options);
-      } else {
-        throw new Error('Main window not available');
-      }
-    }
-  );
-
-  ipcMain.handle(
-    'perform-sort',
-    async (
-      event,
-      { sourceFolder, destinationFolder, fileExtensions, monthNames }: SortingOptions
-    ) => {
-      await sortFiles(event, {sourceFolder, destinationFolder, fileExtensions, monthNames});
-    }
-  );
-
-  ipcMain.handle('perform-analyze', async (event, {sourceFolder}: AnalyzingOptions): Promise<FileInfo[]> => {
-    return await analyzeFiles(event, {sourceFolder});
-  })
-
-  ipcMain.handle('is-folder', async(_event, path) => {
-    return checkIsFolder(path);
-  });
-
-  ipcMain.handle('show-path-in-explorer', async (_event, path) => {
-    await openPathInFileExplorer(path);
-  });
-
-  ipcMain.handle('get-application-version', async (_event): Promise<string> => {
-    return await getApplicationVersion();
-  });
-
-  // User preferences
-  ipcMain.handle('get-file-extensions-preferences', async (_event): Promise<string[]> => {
-    return getFileExtensionsPreferences();
-  });
-
-  ipcMain.handle('set-file-extensions-preferences', async (_event, fileExtensions: string[]): Promise<void> => {
-    return setFileExtensionsPreferences(fileExtensions);
-  });
-
-  ipcMain.handle('get-custom-months-preferences', async (_event): Promise<string[]> => {
-    return getCustomMonthsPreferences();
-  });
-
-  ipcMain.handle('set-custom-months-preferences', async (_event, customMonths: string[]): Promise<void> => {
-    return setCustomMonthsPreferences(customMonths);
-  });
 });

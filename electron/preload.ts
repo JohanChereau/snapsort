@@ -1,5 +1,9 @@
-import { OpenDialogOptions, contextBridge, ipcRenderer } from 'electron';
-import { SortingOptions, ProgressStatus, AnalyzingOptions } from './types';
+import { contextBridge, ipcRenderer } from 'electron';
+import { isFolder, showOpenDialog, showPathInFileExplorer } from './preload-scripts/file';
+import { getVersion } from './preload-scripts/application';
+import { performAnalyze, addAnalyzeProgressListener, removeAnalyzeProgressListener, addAnalyzeErrorListener, removeAnalyzeErrorListener } from './preload-scripts/coreFeatures/analyzing/analyzing';
+import { performSort, addSortProgressListener, removeSortProgressListener, addSortErrorListener, removeSortErrorListener } from './preload-scripts/coreFeatures/sorting/sorting';
+import { getFileExtensionsPreferences, setFileExtensionsPreferences, getCustomMonthsPreferences, setCustomMonthsPreferences } from './settings';
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('electron', {
@@ -41,93 +45,6 @@ function withPrototype(obj: Record<string, any>) {
     }
   }
   return obj;
-}
-
-async function showOpenDialog(options: OpenDialogOptions) {
-  return await ipcRenderer.invoke('show-open-dialog', options);
-}
-
-async function showPathInFileExplorer(path: string) {
-  return await ipcRenderer.invoke('show-path-in-explorer', path);
-}
-
-// Perform actions
-async function performSort(options: SortingOptions) {
-  return await ipcRenderer.invoke('perform-sort', options);
-}
-
-async function performAnalyze(options: AnalyzingOptions) {
-  return await ipcRenderer.invoke('perform-analyze', options);
-}
-
-async function getVersion() {
-  return await ipcRenderer.invoke('get-application-version');
-}
-
-// Listeners
-function addSortProgressListener(
-  callback: (event: Electron.IpcRendererEvent, progress: ProgressStatus) => void
-) {
-  ipcRenderer.on('sort-progress', callback);
-}
-
-function removeSortProgressListener() {
-  ipcRenderer.removeAllListeners('sort-progress');
-}
-
-function addAnalyzeProgressListener(
-  callback: (event: Electron.IpcRendererEvent, progress: ProgressStatus) => void
-) {
-  ipcRenderer.on('analyze-progress', callback);
-}
-
-function removeAnalyzeProgressListener() {
-  ipcRenderer.removeAllListeners('analyze-progress');
-}
-
-function addSortErrorListener(
-  callback: (event: Electron.IpcRendererEvent, error: Error) => void
-) {
-  ipcRenderer.on('sort-error', callback);
-}
-
-function removeSortErrorListener() {
-  ipcRenderer.removeAllListeners('sort-error');
-}
-
-function addAnalyzeErrorListener(
-  callback: (event: Electron.IpcRendererEvent, error: Error) => void
-) {
-  ipcRenderer.on('analyze-error', callback);
-}
-
-function removeAnalyzeErrorListener() {
-  ipcRenderer.removeAllListeners('analyze-error');
-}
-
-async function isFolder(path: string) {
-  return await ipcRenderer.invoke('is-folder', path);
-}
-
-// User preferences
-async function getFileExtensionsPreferences(): Promise<string[]> {
-  return ipcRenderer.invoke('get-file-extensions-preferences');
-}
-
-async function setFileExtensionsPreferences(
-  fileExtensions: string[]
-): Promise<void> {
-  return ipcRenderer.invoke('set-file-extensions-preferences', fileExtensions);
-}
-
-async function getCustomMonthsPreferences(): Promise<string[]> {
-  return ipcRenderer.invoke('get-custom-months-preferences');
-}
-
-async function setCustomMonthsPreferences(
-  customMonths: string[]
-): Promise<void> {
-  return ipcRenderer.invoke('set-custom-months-preferences', customMonths);
 }
 
 // --------- Preload scripts loading ---------

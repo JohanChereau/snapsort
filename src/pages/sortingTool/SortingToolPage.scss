@@ -19,17 +19,17 @@
 
 .sorting-tool__settings {
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
   gap: 2rem;
   margin-top: 2rem;
 }
 
-.sorting-tool__setting {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.button.sorting-tool__setting-button {
+  background-color: hsl(324, 93%, 35%, 30%);
+  color: var(--clr-neutral-100);
+  font-weight: var(--fw-regular);
+  padding: .5em 1.5em;
 }
 
 .sorting-tool__sort-button {

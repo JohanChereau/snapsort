@@ -15,7 +15,7 @@ const Tool = ({name, icon, iconSize, iconColor, linkTo}: PropsWithChildren<ToolP
   return (
     <li className="tool">
       <Link className="tool__link" to={linkTo}>
-        {createElement(icon, {size: iconSize, color: iconColor})}
+        <span className="tool__icon">{createElement(icon, {size: iconSize, color: iconColor})}</span>
         <h3 className="tool__name">{name}</h3>
       </Link>
     </li>

@@ -6,7 +6,6 @@ import ProgressInfos from 'components/progressInfos/ProgressInfos';
 import HomeButton from '@/components/homeButton/HomeButton';
 import FileExtensionsModal from '@/components/modals/fileExtensions/FileExtensionsModal';
 import { arraysAreEqual } from '@/utils/array/arrayUtils';
-import { truncateString } from '@/utils/string/stringUtils';
 import CustomMonthsModal from '@/components/modals/customMonths/CustomMonthsModal';
 
 const SortingToolPage = () => {
@@ -145,16 +144,10 @@ const SortingToolPage = () => {
         {!isSorting && <div className="sorting-tool__settings container">
 
           <div className="sorting-tool__setting">
-            <button className='button bg-secondary' onClick={() => setOpenFileExtensionsModal(true)}>{`File extensions (${fileExtensions.length})`}</button>
-            <p>{truncateString(fileExtensions.map(extension => {
-              return (extension.toString() + ', ')
-            }).join(' '), 60,)}</p>
+            <button className='button sorting-tool__setting-button' onClick={() => setOpenFileExtensionsModal(true)}>{`File extensions (${fileExtensions.length})`}</button>
           </div>
 
-          <div className="sorting-tool__setting"><button className='button bg-secondary' onClick={() => setOpenCustomMonthsModal(true)}>Custom months</button>
-          <p>{truncateString(customMonths.map(month => {
-            return (month.toString() + ', ')
-          }).join(' '), 60)}</p>
+          <div className="sorting-tool__setting"><button className='button sorting-tool__setting-button' onClick={() => setOpenCustomMonthsModal(true)}>Edit months</button>
           </div>
         </div>}
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './FileExtensionsModal.scss';
 import { capitalize } from '@/utils/string/stringUtils';
+import { IoCloseCircle } from "react-icons/io5";
 
 interface FileExtensionsModalProps {
   open: boolean;
@@ -79,7 +80,7 @@ const FileExtensionsModal = ({
         <h3 className="modal__title">Select the file extensions to sort</h3>
 
         <span className="modal__close-button" onClick={onClose}>
-          X
+        <IoCloseCircle />
         </span>
 
         <form
@@ -101,11 +102,12 @@ const FileExtensionsModal = ({
             {Object.keys(EXTENSIONS).map((key) => {
               return (
                 <li key={key}>
-                  <fieldset>
-                    <legend>{capitalize(key)}</legend>
+                  <fieldset className='file-extensions__fieldset'>
+                    <legend className='file-extensions__legend'>{capitalize(key)}</legend>
                     {EXTENSIONS[key].map((extension) => (
                       <div key={extension}>
                         <input
+                        className='file-extensions__input'
                           type="checkbox"
                           id={extension}
                           name={extension}

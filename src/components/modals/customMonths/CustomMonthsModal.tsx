@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { IoCloseCircle } from "react-icons/io5";
 import './CustomMonthsModal.scss';
 
 interface CustomMonthsModalProps {
@@ -49,7 +50,7 @@ const CustomMonthsModal = ({ open, onClose, defaultMonths, submitCustomMonths }:
       <dialog open={open} className="modal-container" onClick={(e) => e.stopPropagation()}>
         <h3 className="modal__title">Change month names</h3>
         <span className="modal__close-button" onClick={onClose}>
-          X
+          <IoCloseCircle />
         </span>
 
         <form className="custom-months__form" onSubmit={handleSubmit}>

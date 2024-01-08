@@ -1,7 +1,7 @@
 .modal-overlay {
   overflow-y: scroll;
 
-  background-color: rgba(255, 255, 255, .3);
+  background-color: rgba(255, 255, 255, 0.3);
   position: fixed;
   top: 50%;
   left: 50%;
@@ -28,14 +28,21 @@
 }
 
 .modal__title {
-    margin-bottom: 1em;
-    font-size: var(--fs-600);
+  margin-bottom: 1em;
+  font-size: var(--fs-600);
 }
 
 .modal__close-button {
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    color: red;
-    cursor: pointer;
+  position: fixed;
+  display: block;
+  top: 1rem;
+  right: 1rem;
+  color: rgb(197, 38, 38);
+  aspect-ratio: 1;
+  width: 30px;
+  cursor: pointer;
+}
+
+.modal__close-button:is(:hover, :focus) {
+  color: rgb(221, 42, 42);
 }

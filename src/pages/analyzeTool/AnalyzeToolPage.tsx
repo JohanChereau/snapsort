@@ -64,7 +64,7 @@ const AnalyzeToolPage = () => {
           selectedFolder={sourceFolder}
         />
 
-        <button className="button bg-primary analyze-tool__sort-button" onClick={handleAnalyze}>
+        <button className="button bg-primary analyze-tool__sort-button" onClick={handleAnalyze} disabled={!sourceFolder}>
           Analyze
         </button>
 

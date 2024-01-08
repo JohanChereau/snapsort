@@ -8,7 +8,7 @@ import './index.scss';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <IconContext.Provider
-      value={{ className: 'react-icon', style: { verticalAlign: 'middle' } }}
+      value={{ className: 'react-icon', style: { verticalAlign: 'middle', width: '100%', height: '100%'} }}
     >
       <AppInfoProvider>
         <App />
