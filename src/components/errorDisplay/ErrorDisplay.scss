@@ -1,0 +1,27 @@
+.error__container {
+  display: inline-block;
+  border: 1px solid var(--clr-accent-400);
+  border-radius: 10px;
+  min-width: 200px;
+  padding: 2em;
+  margin: 1em;
+}
+
+.error__title {
+  color: var(--clr-accent-400);
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-700);
+}
+
+.error__name {
+  font-size: var(--fs-600);
+}
+
+.error__message {
+  text-align: left;
+  color: var(--clr-neutral-200);
+}
+
+.error__button {
+  margin-top: 1em;
+}

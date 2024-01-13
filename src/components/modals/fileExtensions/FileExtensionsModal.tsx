@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import './FileExtensionsModal.scss';
-import { capitalize } from '@/utils/string/stringUtils';
+import { useState, useEffect } from "react";
+import "./FileExtensionsModal.scss";
+import { capitalize } from "@/utils/string/stringUtils";
 import { IoCloseCircle } from "react-icons/io5";
 
 interface FileExtensionsModalProps {
@@ -11,9 +11,26 @@ interface FileExtensionsModalProps {
 }
 
 const EXTENSIONS: { [key: string]: string[] } = {
-  image: ['.jpeg', '.jpg', '.png', '.gif', '.bmp', '.ico', '.svg', '.tiff', '.raw', '.cr2', '.nef', '.rw2', '.arw', '.raf', '.pef', '.dng'],
-  video: ['.mp4', '.avi', '.mov'],
-  text: ['.txt', '.doc', '.docx', '.odt', '.pdf', '.html', '.htm'],
+  image: [
+    ".jpeg",
+    ".jpg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".ico",
+    ".svg",
+    ".tiff",
+    ".raw",
+    ".cr2",
+    ".nef",
+    ".rw2",
+    ".arw",
+    ".raf",
+    ".pef",
+    ".dng",
+  ],
+  video: [".mp4", ".avi", ".mov"],
+  text: [".txt", ".doc", ".docx", ".odt", ".pdf", ".html", ".htm"],
 };
 
 const FileExtensionsModal = ({
@@ -63,7 +80,7 @@ const FileExtensionsModal = ({
   };
 
   useEffect(() => {
-    if(defaultExtensions) {
+    if (defaultExtensions) {
       setSelectedExtensions(defaultExtensions);
     }
   }, [defaultExtensions]);
@@ -80,7 +97,7 @@ const FileExtensionsModal = ({
         <h3 className="modal__title">Select the file extensions to sort</h3>
 
         <span className="modal__close-button" onClick={onClose}>
-        <IoCloseCircle />
+          <IoCloseCircle />
         </span>
 
         <form
@@ -102,12 +119,14 @@ const FileExtensionsModal = ({
             {Object.keys(EXTENSIONS).map((key) => {
               return (
                 <li key={key}>
-                  <fieldset className='file-extensions__fieldset'>
-                    <legend className='file-extensions__legend'>{capitalize(key)}</legend>
+                  <fieldset className="file-extensions__fieldset">
+                    <legend className="file-extensions__legend">
+                      {capitalize(key)}
+                    </legend>
                     {EXTENSIONS[key].map((extension) => (
                       <div key={extension}>
                         <input
-                        className='file-extensions__input'
+                          className="file-extensions__input"
                           type="checkbox"
                           id={extension}
                           name={extension}

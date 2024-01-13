@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { IoCloseCircle } from "react-icons/io5";
-import './CustomMonthsModal.scss';
+import "./CustomMonthsModal.scss";
 
 interface CustomMonthsModalProps {
   open: boolean;
@@ -9,8 +9,14 @@ interface CustomMonthsModalProps {
   submitCustomMonths: (customMonths: string[]) => void;
 }
 
-const CustomMonthsModal = ({ open, onClose, defaultMonths, submitCustomMonths }: CustomMonthsModalProps) => {
-  const [formCustomMonths, setFormCustomMonths] = useState<string[]>(defaultMonths);
+const CustomMonthsModal = ({
+  open,
+  onClose,
+  defaultMonths,
+  submitCustomMonths,
+}: CustomMonthsModalProps) => {
+  const [formCustomMonths, setFormCustomMonths] =
+    useState<string[]>(defaultMonths);
   const [formError, setFormError] = useState<string | null>(null);
 
   const handleMonthChange = (index: number, value: string) => {
@@ -24,7 +30,7 @@ const CustomMonthsModal = ({ open, onClose, defaultMonths, submitCustomMonths }:
 
     // Vérifier si tous les mois sont non vides
     if (formCustomMonths.some((month) => !month.trim())) {
-      setFormError('All months must have a non-empty name.');
+      setFormError("All months must have a non-empty name.");
       return;
     }
 
@@ -36,18 +42,20 @@ const CustomMonthsModal = ({ open, onClose, defaultMonths, submitCustomMonths }:
   };
 
   useEffect(() => {
-    if(defaultMonths) {
-        setFormCustomMonths(defaultMonths);
+    if (defaultMonths) {
+      setFormCustomMonths(defaultMonths);
     }
-    
-  }, [defaultMonths])
-  
+  }, [defaultMonths]);
 
   if (!open) return null;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <dialog open={open} className="modal-container" onClick={(e) => e.stopPropagation()}>
+      <dialog
+        open={open}
+        className="modal-container"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h3 className="modal__title">Change month names</h3>
         <span className="modal__close-button" onClick={onClose}>
           <IoCloseCircle />
@@ -56,9 +64,15 @@ const CustomMonthsModal = ({ open, onClose, defaultMonths, submitCustomMonths }:
         <form className="custom-months__form" onSubmit={handleSubmit}>
           <ul className="custom-months__list">
             {formCustomMonths.map((month, index) => (
-              <li className="custom-months__item" key={index} data-position={index + 1}>
+              <li
+                className="custom-months__item"
+                key={index}
+                data-position={index + 1}
+              >
                 <div className="custom-months__inputs">
-                  <label htmlFor={String(index)}>{`Month n° ${index + 1} :`}</label>
+                  <label htmlFor={String(index)}>{`Month n° ${
+                    index + 1
+                  } :`}</label>
                   <input
                     type="text"
                     value={month}
@@ -79,7 +93,11 @@ const CustomMonthsModal = ({ open, onClose, defaultMonths, submitCustomMonths }:
             <button type="submit" className="button bg-primary">
               Save and close
             </button>
-            {formError && <p style={{ color: 'var(--clr-accent-400)', marginLeft:"auto"}}>{formError}</p>}
+            {formError && (
+              <p style={{ color: "var(--clr-accent-400)", marginLeft: "auto" }}>
+                {formError}
+              </p>
+            )}
           </div>
         </form>
       </dialog>
