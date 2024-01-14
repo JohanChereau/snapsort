@@ -7,6 +7,7 @@ import "./App.scss";
 import AnalyzeToolPage from "@/pages/analyzeTool/AnalyzeToolPage";
 import { ErrorBoundary } from "react-error-boundary";
 import { fallbackRender } from "@/utils/errors/fallbackRender";
+import Updater from "../updater/Updater";
 
 const router = createHashRouter([
   {
@@ -36,6 +37,7 @@ function App() {
     <div className="app">
       <Header />
       <RouterProvider router={router} />
+      <Updater />
     </div>
   );
 }

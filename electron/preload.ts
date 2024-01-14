@@ -1,15 +1,41 @@
-import { contextBridge, ipcRenderer } from 'electron';
-import { isFolder, showOpenDialog, showPathInFileExplorer } from './preload-scripts/file';
-import { getVersion } from './preload-scripts/application';
-import { performAnalyze, addAnalyzeProgressListener, removeAnalyzeProgressListener, addAnalyzeErrorListener, removeAnalyzeErrorListener } from './preload-scripts/coreFeatures/analyzing/analyzing';
-import { performSort, addSortProgressListener, removeSortProgressListener, addSortErrorListener, removeSortErrorListener } from './preload-scripts/coreFeatures/sorting/sorting';
-import { getFileExtensionsPreferences, setFileExtensionsPreferences, getCustomMonthsPreferences, setCustomMonthsPreferences } from './settings';
+import { contextBridge, ipcRenderer } from "electron";
+import {
+  isFolder,
+  showOpenDialog,
+  showPathInFileExplorer,
+} from "./preload-scripts/file";
+import { getVersion } from "./preload-scripts/application";
+import {
+  performAnalyze,
+  addAnalyzeProgressListener,
+  removeAnalyzeProgressListener,
+  addAnalyzeErrorListener,
+  removeAnalyzeErrorListener,
+} from "./preload-scripts/coreFeatures/analyzing/analyzing";
+import {
+  performSort,
+  addSortProgressListener,
+  removeSortProgressListener,
+  addSortErrorListener,
+  removeSortErrorListener,
+} from "./preload-scripts/coreFeatures/sorting/sorting";
+import {
+  getFileExtensionsPreferences,
+  setFileExtensionsPreferences,
+  getCustomMonthsPreferences,
+  setCustomMonthsPreferences,
+} from "./settings";
+import {
+  addUpdaterMessageListener,
+  removeUpdaterMessageListener,
+} from "./preload-scripts/updater";
 
 // --------- Expose some API to the Renderer process ---------
-contextBridge.exposeInMainWorld('electron', {
+contextBridge.exposeInMainWorld("electron", {
   ipcRenderer: withPrototype(ipcRenderer),
   dialog: { showOpenDialog, showPathInFileExplorer },
   file: { isFolder },
+  updater: { addUpdaterMessageListener, removeUpdaterMessageListener },
   performSort: performSort,
   performAnalyze: performAnalyze,
   sortProgress: { addSortProgressListener, removeSortProgressListener },
@@ -35,7 +61,7 @@ function withPrototype(obj: Record<string, any>) {
   for (const [key, value] of Object.entries(protos)) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) continue;
 
-    if (typeof value === 'function') {
+    if (typeof value === "function") {
       // Some native APIs, like `NodeJS.EventEmitter['on']`, don't work in the Renderer process. Wrapping them into a function.
       obj[key] = function (...args: any) {
         return value.call(obj, ...args);
@@ -49,13 +75,13 @@ function withPrototype(obj: Record<string, any>) {
 
 // --------- Preload scripts loading ---------
 function domReady(
-  condition: DocumentReadyState[] = ['complete', 'interactive']
+  condition: DocumentReadyState[] = ["complete", "interactive"]
 ) {
   return new Promise((resolve) => {
     if (condition.includes(document.readyState)) {
       resolve(true);
     } else {
-      document.addEventListener('readystatechange', () => {
+      document.addEventListener("readystatechange", () => {
         if (condition.includes(document.readyState)) {
           resolve(true);
         }
@@ -108,12 +134,12 @@ function useLoading() {
   z-index: 9;
 }
     `;
-  const oStyle = document.createElement('style');
-  const oDiv = document.createElement('div');
+  const oStyle = document.createElement("style");
+  const oDiv = document.createElement("div");
 
-  oStyle.id = 'app-loading-style';
+  oStyle.id = "app-loading-style";
   oStyle.innerHTML = styleContent;
-  oDiv.className = 'app-loading-wrap';
+  oDiv.className = "app-loading-wrap";
   oDiv.innerHTML = `<div class="${className}"><img src="/Snapsort.png" alt="Snapsort logo"></div>`;
 
   return {
@@ -134,7 +160,7 @@ const { appendLoading, removeLoading } = useLoading();
 domReady().then(appendLoading);
 
 window.onmessage = (ev) => {
-  ev.data.payload === 'removeLoading' && removeLoading();
+  ev.data.payload === "removeLoading" && removeLoading();
 };
 
 setTimeout(removeLoading, 4999);
@@ -167,6 +193,10 @@ declare global {
       };
       file: {
         isFolder: typeof isFolder;
+      };
+      updater: {
+        addUpdaterMessageListener: typeof addUpdaterMessageListener;
+        removeUpdaterMessageListener: typeof removeUpdaterMessageListener;
       };
       application: {
         getVersion: typeof getVersion;

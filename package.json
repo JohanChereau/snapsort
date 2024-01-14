@@ -2,15 +2,32 @@
   "name": "snapsort",
   "private": true,
   "version": "0.0.0",
+  "author": "Johan Chereau",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "test": "vitest"
+    "preview": "vite preview"
+  },
+  "repository": "https://github.com/JohanChereau/snapsort.git",
+  "publish" : {
+    "provider": "github",
+    "releaseType": "release"
+  },
+  "build": {
+    "appId": "com.johan-chereau.snapsort",
+    "productName": "Snapsort",
+    "win": {
+      "target": "nsis"
+    },
+    "directories": {
+      "output": "dist"
+    }
   },
   "dependencies": {
     "electron-store": "^8.1.0",
+    "electron-updater": "^6.1.7",
     "gsap": "^3.12.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
