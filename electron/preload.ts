@@ -140,7 +140,7 @@ function useLoading() {
   oStyle.id = "app-loading-style";
   oStyle.innerHTML = styleContent;
   oDiv.className = "app-loading-wrap";
-  oDiv.innerHTML = `<div class="${className}"><img src="/Snapsort.png" alt="Snapsort logo"></div>`;
+  oDiv.innerHTML = `<div class="${className}"><img src="./Snapsort.png" alt="Snapsort logo"></div>`;
 
   return {
     appendLoading() {

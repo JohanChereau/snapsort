@@ -13,7 +13,7 @@ const Updater = () => {
       updaterMessage === "checking-for-update") ||
     updaterMessage === "download-progress"
       ? "block"
-      : "";
+      : "none";
 
   useEffect(() => {
     window.electron.updater.addUpdaterMessageListener((_event, message) => {

@@ -18,6 +18,9 @@ process.env.VITE_PUBLIC = app.isPackaged
   ? process.env.DIST
   : path.join(process.env.DIST, "../public");
 
+console.info("DIST:", process.env.DIST);
+console.info("VITE_PUBLIC:", process.env.VITE_PUBLIC);
+
 let win: BrowserWindow | null;
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
@@ -33,6 +36,7 @@ function createWindow(): BrowserWindow {
       nodeIntegration: true,
       contextIsolation: true,
       webSecurity: false,
+      devTools: process.env.NODE_ENV !== "production",
     },
   });
 
@@ -52,10 +56,14 @@ function createWindow(): BrowserWindow {
   });
 
   if (VITE_DEV_SERVER_URL) {
+    console.log("Loading URL from VITE_DEV_SERVER_URL:", VITE_DEV_SERVER_URL);
     win.loadURL(VITE_DEV_SERVER_URL);
   } else {
     // win.loadFile('dist/index.html')
-    win.loadFile(path.join(process.env.DIST, "index.html"));
+    console.log("Loading file from DIST:", process.env.DIST);
+
+    const indexHTML = path.join(process.env.DIST, "index.html");
+    win.loadFile(indexHTML);
   }
 
   return win;
