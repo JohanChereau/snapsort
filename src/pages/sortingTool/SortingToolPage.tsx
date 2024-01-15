@@ -11,15 +11,18 @@ import { ErrorBoundary } from "react-error-boundary";
 import { fallbackRender } from "@/utils/errors/fallbackRender";
 
 const SortingToolPage = () => {
-  const [sourceFolder, setSourceFolder] = useState<string | null>(null);
-  const [destinationFolder, setDestinationFolder] = useState<string | null>(
-    null
-  );
+  const [sourceFolder, setSourceFolder] = useState<string>("");
+  const [destinationFolder, setDestinationFolder] = useState<string>("");
   const [fileExtensions, setFileExtensions] = useState<string[]>([]);
   const [customMonths, setCustomMonths] = useState<string[]>([]);
 
-  const isReadyToSort: boolean =
-    sourceFolder && destinationFolder ? true : false;
+  const isReadyToSort: boolean = Boolean(
+    sourceFolder &&
+      destinationFolder &&
+      sourceFolder !== destinationFolder &&
+      !isSubdirectory(sourceFolder, destinationFolder) &&
+      !isSubdirectory(destinationFolder, sourceFolder)
+  );
 
   const [isSorting, setIsSorting] = useState<boolean>(false);
   const [sortProgress, setSortProgress] = useState<ProgressStatus>({
@@ -34,6 +37,10 @@ const SortingToolPage = () => {
     useState<boolean>(false);
   const [openCustomMonthsModal, setOpenCustomMonthsModal] =
     useState<boolean>(false);
+
+  function isSubdirectory(parent: string, dir: string): boolean {
+    return dir.startsWith(parent);
+  }
 
   async function handleSort() {
     try {
@@ -146,7 +153,9 @@ const SortingToolPage = () => {
               instructions="or drag & drop your folder here."
               actionButtonText="Browse folder"
               onFolderSelected={(folder) => setSourceFolder(folder)}
-              isFolderValid={sourceFolder ? true : false}
+              isFolderValid={Boolean(
+                sourceFolder && !isSubdirectory(destinationFolder, sourceFolder)
+              )}
               selectedFolder={sourceFolder}
             />
           </ErrorBoundary>
@@ -158,7 +167,10 @@ const SortingToolPage = () => {
               instructions="or drag & drop your folder here."
               actionButtonText="Browse folder"
               onFolderSelected={(folder) => setDestinationFolder(folder)}
-              isFolderValid={destinationFolder ? true : false}
+              isFolderValid={Boolean(
+                destinationFolder &&
+                  !isSubdirectory(sourceFolder, destinationFolder)
+              )}
               selectedFolder={destinationFolder}
             />
           </ErrorBoundary>
