@@ -15,14 +15,12 @@
     "jsx": "react-jsx",
     "baseUrl": "./",
     "paths": {
-      "@/*":[
-        "src/*"
-      ],
+      "@/*": ["src/*"],
       "components/*": ["./src/components/*"],
       "interfaces/": ["./src/data/interfaces/", "./src/data/interfaces/*"],
       "objects/*": ["./src/data/objects/*"],
       "utils/*": [".src/utils"],
-      "pages/*": [".src/pages/*"],
+      "pages/*": [".src/pages/*"]
     },
 
     /* Linting */
