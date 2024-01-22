@@ -1,7 +1,7 @@
 {
   "name": "snapsort",
   "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "Johan Chereau",
   "description": "Sorting utility tool",
   "license": "MIT",
@@ -19,7 +19,7 @@
       "icon": "public/Snapsort.ico"
     },
     "directories": {
-      "output": "release"
+      "output": "release/1.0.0"
     }
   },
   "repository": "https://github.com/JohanChereau/snapsort.git",

@@ -37,7 +37,8 @@ function createWindow(): BrowserWindow {
       contextIsolation: true,
       webSecurity: true,
       autoplayPolicy: "user-gesture-required",
-      devTools: process.env.NODE_ENV !== "production",
+      devTools: false,
+      // devTools: process.env.NODE_ENV !== "production",
     },
   });
 
@@ -47,13 +48,13 @@ function createWindow(): BrowserWindow {
 
   // Test active push message to Renderer-process.
   win.webContents.on("did-finish-load", () => {
-    if (import.meta.env.DEV) {
-      win?.webContents.send(
-        "main-process-message",
-        new Date().toLocaleString()
-      );
-      win?.webContents.openDevTools();
-    }
+    // if (import.meta.env.DEV) {
+    //   win?.webContents.send(
+    //     "main-process-message",
+    //     new Date().toLocaleString()
+    //   );
+    //   win?.webContents.openDevTools();
+    // }
   });
 
   if (VITE_DEV_SERVER_URL) {
