@@ -24,11 +24,12 @@ Welcome to the Snapsort application. Snapsort is a small and simple open source 
 
 ## Links
 
-- Visit the application page : [Application page]()
+- Visit the application page : [Application page](https://snapsort.johan-chereau.com)
 
 ## Social
 
 - **Portfolio** : [View portfolio](https://johan-chereau.com)
+- **Blog** : [View blog](https://blog.johan-chereau.com)
 - **LinkedIn** : [View LinkedIn profile](https://fr.linkedin.com/in/johan-chereau)
 
 ## Documentation
